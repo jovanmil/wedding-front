@@ -4,14 +4,14 @@ import './index.css';
 import App from './App';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import thunk from 'redux-thunk';
-import datareducer from "./redux/reducers/datareducer";
-import loginreducer from "./redux/reducers/loginreducer";
 import {Provider} from 'react-redux';
 import {register} from './serviceWorker';
+import loginreducer from "./redux/reducers/loginreducer";
+import datareducer from "./redux/reducers/datareducer";
 
 // Defining additional reducers if there is need for
 const rootReducer = combineReducers({
-    loginreducer: loginreducer,
+    loginReducer: loginreducer,
     datareducer: datareducer
 });
 

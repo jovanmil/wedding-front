@@ -14,10 +14,12 @@ class LoginForm extends Component {
 
     render() {
         const {
-            change,
             click,
-            value,
-            keyPress
+            keyPress,
+            email,
+            password,
+            changePassword,
+            changeEmail
         } = this.props;
 
         return (
@@ -35,15 +37,16 @@ class LoginForm extends Component {
                 <Form>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email"/>
+                        <Form.Control onChange={changeEmail} value={email} type="email" placeholder="Enter email"/>
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password"/>
+                        <Form.Control onChange={changePassword} value={password} type="password"
+                                      placeholder="Password"/>
                     </Form.Group>
                     <hr/>
-                    <Button variant="primary" type="submit">
+                    <Button onClick={click} onKeyPress={keyPress} variant="primary" type="button">
                         LogIn
                     </Button>
                 </Form>

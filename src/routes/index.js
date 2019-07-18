@@ -1,11 +1,12 @@
 import React from "react";
 import {BrowserRouter, Route} from "react-router-dom";
-import LoginForm from "../forms/LoginForm";
+import Home from "../main/Home";
+import MainContent from "../main/MainContent";
 
 export default () => (<BrowserRouter>
         <div>
-            <Route path="/" exact component={LoginForm}/>
-            {/*<Route path="/users" exact component={Users}/>*/}
+            <Route path="/" exact component={Home}/>
+            <Route path="/main" exact component={MainContent}/>
             {/*<Route path="/channel/:channelId" exact component={Channel}/>*/}
         </div>
     </BrowserRouter>

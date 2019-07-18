@@ -1,4 +1,6 @@
-import {Map} from "immutable";
+import {fromJS, Map} from "immutable";
+import {TYPE_LOG_IN} from "../actions/loginActions";
+
 // import {
 //   TYPE_GET_ALL_EMOJI,
 //   TYPE_GET_ALL_USERS,
@@ -11,8 +13,19 @@ import {Map} from "immutable";
 // } from "../actions/./populateActions";
 
 const loginreducer = (state = new Map(), action = {}) => {
-    // const populateKey = action.populateKey;
+    const populateKey = action.populateKey;
 
+    switch (action.type) {
+        case TYPE_LOG_IN: {
+            const response = fromJS(action.payload);
+            state = state.setIn([populateKey], response);
+            return state;
+        }
+
+        default:
+            return state;
+
+    }
     // switch (action.type) {
     //   case TYPE_UPDATE_CHANNELS: {
     //
@@ -195,7 +208,7 @@ const loginreducer = (state = new Map(), action = {}) => {
     //     return state;
     // }
 
-    return state;
+    // return state;
 };
 
 export default loginreducer;
