@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import logo from "../media/images/dossier-logo.jpg";
+import logo from "../media/images/logo.jpg";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
@@ -7,9 +7,25 @@ class LoginForm extends Component {
 
     col_md_12 = {
         display: "flex",
-        textAlign: "center",
-        alignItems: "center",
-        marginBottom: "15px",
+        textAlign: "left",
+        marginBottom: "20px",
+        marginTop: "20px",
+        paddingRight: "0px",
+        paddingLeft: "0px"
+    };
+
+    col_md_12_extended = {
+        paddingRight: "0px",
+        paddingLeft: "0px"
+    };
+
+    buttonStyle = {
+        marginBottom: "20px"
+    };
+
+    rounded = {
+        marginTop: "10px",
+        borderRadius: "30%",
     };
 
     render() {
@@ -25,11 +41,11 @@ class LoginForm extends Component {
         return (
             <div>
                 <div className="col-md-12" style={this.col_md_12}>
-                    <div className="col-md-12">
-                        <img className="rounded" width="70px" style={this.rounded} src={logo} alt="dossier"/>
+                    <div className="col-md-12" style={this.col_md_12_extended}>
+                        <img className="rounded" width="150px" style={this.rounded} src={logo} alt="dossier"/>
                         <div className="page-header">
                             <h4># Jovan and Danica wedding App</h4>
-                            <small>PLease fill email and password!</small>
+                            <small>Please fill email and password!</small>
                         </div>
                     </div>
                 </div>
@@ -46,7 +62,8 @@ class LoginForm extends Component {
                                       placeholder="Password"/>
                     </Form.Group>
                     <hr/>
-                    <Button onClick={click} onKeyPress={keyPress} variant="primary" type="button">
+                    <Button style={this.buttonStyle} onClick={click} onKeyPress={keyPress} variant="primary"
+                            type="button">
                         LogIn
                     </Button>
                 </Form>

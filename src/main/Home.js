@@ -9,8 +9,7 @@ class Home extends Component {
 
     col_md_12 = {
         alignItems: "center",
-        textAlign: "center",
-        color: "red"
+        textAlign: "center"
     };
 
     constructor(props) {
