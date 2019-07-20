@@ -1,16 +1,5 @@
 import {fromJS, Map} from "immutable";
-import {TYPE_LOG_IN} from "../actions/loginActions";
-
-// import {
-//   TYPE_GET_ALL_EMOJI,
-//   TYPE_GET_ALL_USERS,
-//   TYPE_LOAD_MESSAGES,
-//   TYPE_RESET_STATE,
-//   TYPE_UPDATE_CHANNELS,
-//   TYPE_UPDATE_LAST_MESSAGE,
-//   TYPE_UPDATE_USER,
-//   TYPE_USER_AUTHENTIFICATION
-// } from "../actions/./populateActions";
+import {TYPE_LOG_IN} from "../actions/constants";
 
 const loginreducer = (state = new Map(), action = {}) => {
     const populateKey = action.populateKey;
@@ -18,7 +7,13 @@ const loginreducer = (state = new Map(), action = {}) => {
     switch (action.type) {
         case TYPE_LOG_IN: {
             const response = fromJS(action.payload);
-            state = state.setIn([populateKey], response);
+            if (response !== "error") {
+                console.log("RESSSS " + response.get("data").get("access_token"))
+                state = state.setIn([populateKey], response.get("data").get("access_token"));
+            } else {
+                state = state.setIn([populateKey], response);
+            }
+
             return state;
         }
 

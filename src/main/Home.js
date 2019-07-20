@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import {doLogin, TYPE_LOG_IN} from "../redux/actions/loginActions";
+import {doLogin} from "../redux/actions/loginActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import LoginForm from ".././forms/LoginForm";
-import {POPULATE_KEY_LOG_IN} from "../redux/actions/constants";
+import {POPULATE_KEY_LOG_IN, TYPE_LOG_IN} from "../redux/actions/constants";
 
 class Home extends Component {
 
@@ -26,7 +26,7 @@ class Home extends Component {
             history
         } = this.props;
 
-        history.push("/main");
+        history.push("/guests");
     }
 
     handleClick() {
@@ -57,14 +57,12 @@ class Home extends Component {
 
     render() {
         const {
-            userAuth
+            authToken
         } = this.props;
 
-        console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK " + userAuth)
-
-
         const formJsx = [];
-        formJsx.push(<LoginForm
+        formJsx.push(
+            <LoginForm
             key={"loginForm"}
             changePassword={event => this.updatePassword(event)}
             changeEmail={event => this.updateEmail(event)}
@@ -74,15 +72,14 @@ class Home extends Component {
             password={this.state.password}
         />);
 
-        if (userAuth && userAuth.get("email") && userAuth.get("email") !== "") {
-            alert("OK")
-            this.nextPath()
-        } else if (userAuth === false) {
+        if (authToken === "error") {
             formJsx.push(
                 <div key={"errorMsg"} className="page-header" style={this.col_md_12}>
-                    <small>Wrong token!</small>
+                    <small>Bad credential (email/password)!</small>
                 </div>
             )
+        } else if (authToken) {
+            this.nextPath();
         }
 
         return (
@@ -94,10 +91,10 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => {
-    const userAuth = state.loginReducer.get(POPULATE_KEY_LOG_IN);
+    const authToken = state.loginReducer.get(POPULATE_KEY_LOG_IN);
 
     return {
-        userAuth
+        authToken
     };
 };
 

@@ -6,7 +6,7 @@ import MainContent from "../main/MainContent";
 export default () => (<BrowserRouter>
         <div>
             <Route path="/" exact component={Home}/>
-            <Route path="/main" exact component={MainContent}/>
+            <Route path="/guests" exact component={MainContent}/>
             {/*<Route path="/channel/:channelId" exact component={Channel}/>*/}
         </div>
     </BrowserRouter>
