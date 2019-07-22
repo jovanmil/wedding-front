@@ -17,6 +17,7 @@ class MainContent extends Component {
         "Sort No.",
         "First Name",
         "Last Name",
+        "Category",
         "Description",
         "Invited",
         "Confirmed",
@@ -28,6 +29,7 @@ class MainContent extends Component {
           sortNo: 1,
           firstName: "Jovan",
           lastName: "Mil",
+          category: "Tatini prijatelji",
           description: "Description 1",
           invited: "yes",
           confirmed: "no"
@@ -37,6 +39,7 @@ class MainContent extends Component {
           sortNo: 2,
           firstName: "Milica",
           lastName: "Mil",
+          category: "Familija",
           description: "Description 2",
           invited: "no",
           confirmed: "no"
@@ -71,11 +74,11 @@ class MainContent extends Component {
     } = this.state;
 
     if (editActive) {
-      headers.splice(6, 0, "Remove");
+      headers.splice(7, 0, "Remove");
     }
     else {
-      headers.splice(7, 8);
-      headers[6] = "Edit";
+      headers.splice(8, 9);
+      headers[7] = "Edit";
     }
 
     const headersJsx = [];
@@ -104,6 +107,17 @@ class MainContent extends Component {
     this.generateContent(id);
   }
 
+  handleRemove(guestId) {
+    const{
+      guests,
+      editActive
+    } = this.state;
+
+    const removedGuestItems = guests.filter(x => x.id !== guestId);
+    this.setState({editActive: !editActive});
+    this.setState({guests: removedGuestItems});
+  }
+
   generateContent(id) {
     const {
       guests,
@@ -124,28 +138,25 @@ class MainContent extends Component {
       );
     }
 
-    let removeGuestJsx = [];
-    if (editActive) {
-      removeGuestJsx = (
-          <td key={"content-removeIcon"} style={this.td}>
-            <img alt={"remove-icon"} style={this.logoStyle} src={removeIcon}/>
-          </td>
-      );
-    }
-    else {
-      removeGuestJsx = [];
-    }
-
     for (let i = 0; i < guests.length; i++) {
       bodyContent.push(
           <tr key={"content-" + i}>
             <td style={this.td}>{guests[i].sortNo}</td>
             <td style={this.td}>{guests[i].firstName}</td>
             <td style={this.td}>{guests[i].lastName}</td>
+            <td style={this.td}>{guests[i].category}</td>
             <td style={this.td}>{guests[i].description}</td>
             <td style={this.td}>{guests[i].invited}</td>
             <td style={this.td}>{guests[i].confirmed}</td>
-            {removeGuestJsx}
+            {editActive ? (
+                <td key={"content-removeIcon"} style={this.td}>
+                  <img alt={"remove-icon"}
+                       style={this.logoStyle}
+                       src={removeIcon}
+                       onClick={() => this.handleRemove(guests[i].id)}
+                  />
+                </td>
+            ) : null}
             <td style={this.td}>{editGuestJsx}</td>
           </tr>
       );
