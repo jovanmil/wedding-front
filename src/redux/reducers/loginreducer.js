@@ -1,5 +1,6 @@
 import {fromJS, Map} from "immutable";
 import {TYPE_LOG_IN} from "../actions/constants";
+import {encrypt} from "../crypting/crypt";
 
 const loginreducer = (state = new Map(), action = {}) => {
     const populateKey = action.populateKey;
@@ -8,8 +9,10 @@ const loginreducer = (state = new Map(), action = {}) => {
         case TYPE_LOG_IN: {
             const response = fromJS(action.payload);
             if (response !== "error") {
-                console.log("RESSSS " + response.get("data").get("access_token"))
-                state = state.setIn([populateKey], response.get("data").get("access_token"));
+                const token = response.get("data").get("access_token");
+                state = state.setIn([populateKey], token);
+                const ecryptedToken = encrypt(token);
+                sessionStorage.setItem("token", ecryptedToken);
             } else {
                 state = state.setIn([populateKey], response);
             }

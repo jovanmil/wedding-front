@@ -1,15 +1,25 @@
-import {Map} from "immutable";
-// import {
-//   TYPE_GET_ALL_EMOJI,
-//   TYPE_GET_ALL_USERS,
-//   TYPE_LOAD_MESSAGES,
-//   TYPE_RESET_STATE,
-//   TYPE_UPDATE_CHANNELS,
-//   TYPE_UPDATE_LAST_MESSAGE,
-//   TYPE_UPDATE_USER
-// } from "../actions/./populateActions";
+import {fromJS, Map} from "immutable";
+import {TYPE_FETCH_GUESTS} from "../actions/constants";
 
 const datareducer = (im_state = new Map(), action = {}) => {
+    const populateKey = action.populateKey;
+
+    switch (action.type) {
+        case TYPE_FETCH_GUESTS: {
+            const response = fromJS(action.payload);
+            if (response !== "error") {
+                im_state = im_state.setIn([populateKey], response.get("data"));
+            } else {
+                im_state = im_state.setIn([populateKey], response);
+            }
+
+            return im_state;
+        }
+
+        default:
+            return im_state;
+
+    }
     // const populateKey = action.populateKey;
     // let im_newState = im_state;
     //
@@ -124,8 +134,6 @@ const datareducer = (im_state = new Map(), action = {}) => {
     // return im_newState.filter((resource) => {
     //   return !!resource && !(Iterable.isIterable(resource) && resource.isEmpty());
     // });
-
-    return im_state;
 
 };
 

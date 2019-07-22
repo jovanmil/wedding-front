@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {doLogin} from "../redux/actions/loginActions";
+import {doLogin} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import LoginForm from ".././forms/LoginForm";

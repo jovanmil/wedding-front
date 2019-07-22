@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import {doLogin} from "../redux/actions/loginActions";
+import {doFetchAllGuests, doLogin} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import {POPULATE_KEY_LOG_IN} from "../redux/actions/constants";
+import {POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS} from "../redux/actions/constants";
 import Table from "react-bootstrap/Table";
 import editIcon from "../media/images/edit-icon.png";
 import removeIcon from "../media/images/delete-icon.png";
@@ -48,6 +48,15 @@ class MainContent extends Component {
 
     };
   }
+
+  componentDidMount() {
+    const {
+      doFetchAllGuests
+    } = this.props;
+
+    doFetchAllGuests(POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS)
+  }
+
 
   tableStyle = {
     marginTop: "30px",
@@ -184,15 +193,17 @@ class MainContent extends Component {
 }
 
 const mapStateToProps = state => {
-  const userAuth = state.loginReducer.get(POPULATE_KEY_LOG_IN);
+  const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
+
   return {
-    userAuth
+    guests
   };
 };
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    doLogin
+    doLogin,
+    doFetchAllGuests
   }, dispatch);
 }
 
