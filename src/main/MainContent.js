@@ -13,6 +13,7 @@ import editIcon from "../media/images/edit-icon.png";
 import removeIcon from "../media/images/delete-icon.png";
 import closeIcon from "../media/images/close-icon.png";
 import {popUp} from "./utils/Util";
+import Button from "react-bootstrap/Button";
 
 class MainContent extends Component {
   constructor(props) {
@@ -41,7 +42,7 @@ class MainContent extends Component {
   }
 
   tableStyle = {
-    marginTop: "30px",
+    marginTop: "20px",
     marginBottom: "30px",
   };
 
@@ -51,6 +52,17 @@ class MainContent extends Component {
 
   th = {
     textAlign: "center"
+  };
+
+
+  span = {
+    marginLeft: "5px",
+    marginRight: "5px"
+  }
+
+  buttonPanel={
+    marginTop: "20px",
+    textAlign: "left"
   };
 
   logoStyle = {
@@ -179,12 +191,31 @@ class MainContent extends Component {
     );
   }
 
+  generateButtonPanel(){
+    return (
+        <div style={this.buttonPanel}>
+          <Button style={this.buttonStyle} variant="primary"
+                  type="button">Add Guest</Button>
+          <span style={this.span}/>
+          <Button style={this.buttonStyle} variant="primary"
+                  type="button">Add Category</Button>
+          <span style={this.span}/>
+          <Button style={this.buttonStyle} variant="primary"
+                  type="button">Add SubCategory</Button>
+        </div>
+    )
+  }
+
+
   render() {
     const tableJsx = (
-        <Table style={this.tableStyle} striped bordered hover>
-          {this.generateHeader()}
-          {this.generateContent()}
-        </Table>
+        <div>
+          {this.generateButtonPanel()}
+          <Table style={this.tableStyle} striped bordered hover>
+            {this.generateHeader()}
+            {this.generateContent()}
+          </Table>
+        </div>
     );
 
     return (
