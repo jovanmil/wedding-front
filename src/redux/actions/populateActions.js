@@ -9,11 +9,11 @@ export function updateResources(result, populateKey, type) {
     };
 }
 
-export function updateResourcesWithIds(result, populateKey, type, channelId) {
+export function updateResourcesWithIds(result, populateKey, type, id) {
     return {
         type: type,
         payload: result,
         populateKey: populateKey,
-        channelId: channelId
+        id: id
     };
 }

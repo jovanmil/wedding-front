@@ -1,12 +1,18 @@
 import React, {Component} from "react";
-import {doFetchAllGuests, doLogin} from "../redux/actions/serverActions";
+import {doDeleteSingleGuest, doFetchAllGuests, doLogin} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import {POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS} from "../redux/actions/constants";
+import {
+  POPULATE_KEY_DELETE_GUEST,
+  POPULATE_KEY_FETCH_GUESTS,
+  TYPE_DELETE_GUEST,
+  TYPE_FETCH_GUESTS
+} from "../redux/actions/constants";
 import Table from "react-bootstrap/Table";
 import editIcon from "../media/images/edit-icon.png";
 import removeIcon from "../media/images/delete-icon.png";
 import closeIcon from "../media/images/close-icon.png";
+import {popUp} from "./utils/Util";
 
 class MainContent extends Component {
   constructor(props) {
@@ -22,30 +28,7 @@ class MainContent extends Component {
         "Invited",
         "Confirmed",
         "Edit"
-      ],
-      guests: [
-        {
-          id: 1,
-          sortNo: 1,
-          firstName: "Jovan",
-          lastName: "Mil",
-          category: "Tatini prijatelji",
-          description: "Description 1",
-          invited: "yes",
-          confirmed: "no"
-        },
-        {
-          id: 2,
-          sortNo: 2,
-          firstName: "Milica",
-          lastName: "Mil",
-          category: "Familija",
-          description: "Description 2",
-          invited: "no",
-          confirmed: "no"
-        }
       ]
-
     };
   }
 
@@ -56,7 +39,6 @@ class MainContent extends Component {
 
     doFetchAllGuests(POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS)
   }
-
 
   tableStyle = {
     marginTop: "30px",
@@ -112,26 +94,43 @@ class MainContent extends Component {
     } = this.state;
 
     this.setState({editActive: !editActive});
-
     this.generateContent(id);
   }
 
-  handleRemove(guestId) {
-    const{
+  permanentlyRemoveGuest(guestId) {
+    const {
       guests,
+      doDeleteSingleGuest
+    } = this.props;
+
+    const {
       editActive
     } = this.state;
 
+    doDeleteSingleGuest(guestId, POPULATE_KEY_DELETE_GUEST, TYPE_DELETE_GUEST)
     const removedGuestItems = guests.filter(x => x.id !== guestId);
     this.setState({editActive: !editActive});
     this.setState({guests: removedGuestItems});
   }
 
+  handleRemove(guestId) {
+    if (guestId) {
+      popUp(
+          "Delete guest",
+          "Are you sure you want to do this?",
+          () => this.permanentlyRemoveGuest(guestId)
+      );
+    }
+  }
+
   generateContent(id) {
     const {
-      guests,
       editActive
     } = this.state;
+
+    const {
+      guests
+    } = this.props;
 
     const bodyContent = [];
 
@@ -147,28 +146,30 @@ class MainContent extends Component {
       );
     }
 
-    for (let i = 0; i < guests.length; i++) {
-      bodyContent.push(
-          <tr key={"content-" + i}>
-            <td style={this.td}>{guests[i].sortNo}</td>
-            <td style={this.td}>{guests[i].firstName}</td>
-            <td style={this.td}>{guests[i].lastName}</td>
-            <td style={this.td}>{guests[i].category}</td>
-            <td style={this.td}>{guests[i].description}</td>
-            <td style={this.td}>{guests[i].invited}</td>
-            <td style={this.td}>{guests[i].confirmed}</td>
-            {editActive ? (
-                <td key={"content-removeIcon"} style={this.td}>
-                  <img alt={"remove-icon"}
-                       style={this.logoStyle}
-                       src={removeIcon}
-                       onClick={() => this.handleRemove(guests[i].id)}
-                  />
-                </td>
-            ) : null}
-            <td style={this.td}>{editGuestJsx}</td>
-          </tr>
-      );
+    if (guests && guests.length !== 0) {
+      for (let i = 0; i < guests.size; i++) {
+        bodyContent.push(
+            <tr key={"content-" + i}>
+              <td style={this.td}>{guests.getIn([i, "id"])}</td>
+              <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
+              <td style={this.td}>{guests.getIn([i, "lastName"])}</td>
+              <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
+              <td style={this.td}>{guests.getIn([i, "description"])}</td>
+              <td style={this.td}>{guests.getIn([i, "invited"])}</td>
+              <td style={this.td}>{guests.getIn([i, "confirmed"])}</td>
+              {editActive ? (
+                  <td key={"content-removeIcon"} style={this.td}>
+                    <img alt={"remove-icon"}
+                         style={this.logoStyle}
+                         src={removeIcon}
+                         onClick={() => this.handleRemove(guests.getIn([i, "id"]))}
+                    />
+                  </td>
+              ) : null}
+              <td style={this.td}>{editGuestJsx}</td>
+            </tr>
+        );
+      }
     }
 
     return (
@@ -203,7 +204,8 @@ const mapStateToProps = state => {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     doLogin,
-    doFetchAllGuests
+    doFetchAllGuests,
+    doDeleteSingleGuest
   }, dispatch);
 }
 
