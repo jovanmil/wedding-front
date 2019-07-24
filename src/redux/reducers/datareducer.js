@@ -1,5 +1,11 @@
 import {fromJS, Map} from "immutable";
-import {POPULATE_KEY_FETCH_GUESTS, TYPE_DELETE_GUEST, TYPE_FETCH_GUESTS} from "../actions/constants";
+import {
+  POPULATE_KEY_FETCH_GUESTS,
+  TYPE_DELETE_GUEST,
+  TYPE_FETCH_CATEGORIES,
+  TYPE_FETCH_GUESTS,
+  TYPE_FETCH_SUBCATEGORIES
+} from "../actions/constants";
 
 const datareducer = (im_state = new Map(), action = {}) => {
   const populateKey = action.populateKey;
@@ -27,6 +33,30 @@ const datareducer = (im_state = new Map(), action = {}) => {
           im_state = im_state.deleteIn([POPULATE_KEY_FETCH_GUESTS, index])
         }
       });
+      return im_state;
+    }
+
+    case TYPE_FETCH_CATEGORIES: {
+      const response = fromJS(action.payload);
+
+      if (response !== "error" && response.size !== 0) {
+        im_state = im_state.setIn([populateKey], response.get("data"));
+      } else {
+        im_state = im_state.setIn([populateKey], response);
+      }
+
+      return im_state;
+    }
+
+    case TYPE_FETCH_SUBCATEGORIES: {
+      const response = fromJS(action.payload);
+
+      if (response !== "error") {
+        im_state = im_state.setIn([populateKey], response.get("data"));
+      } else {
+        im_state = im_state.setIn([populateKey], response);
+      }
+
       return im_state;
     }
 

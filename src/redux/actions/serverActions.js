@@ -72,3 +72,47 @@ export function doDeleteSingleGuest(guestId, populateKey, type) {
         });
   }
 }
+
+export function doFetchAllCategories(populateKey, type) {
+    const TOKEN = decrypt(window.sessionStorage.getItem("token"));
+
+    return (dispatch) => {
+        axios.get("http://localhost:9005/categories",
+            {
+                headers: {
+                    "Authorization": "Bearer " + TOKEN
+                }
+            }
+        )
+            .then(response => {
+                dispatch(updateResources(response, populateKey, type));
+                // console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error.response.status);
+                dispatch(updateResources("error", populateKey, type));
+            });
+    }
+}
+
+export function doFetchAllSubCategoriesByCategoryId(id, populateKey, type) {
+    const TOKEN = decrypt(window.sessionStorage.getItem("token"));
+
+    return (dispatch) => {
+        axios.get("http://localhost:9005/subcategories/" + id,
+            {
+                headers: {
+                    "Authorization": "Bearer " + TOKEN
+                }
+            }
+        )
+            .then(response => {
+                dispatch(updateResources(response, populateKey, type));
+                // console.log(response.data);
+            })
+            .catch(error => {
+                // console.log(error.response.status);
+                dispatch(updateResources("error", populateKey, type));
+            });
+    }
+}

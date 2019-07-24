@@ -109,7 +109,7 @@ class MainContent extends Component {
     this.generateContent(id);
   }
 
-  addGuest() {
+  addGuestPage() {
     const {
       history
     } = this.props;
@@ -117,7 +117,7 @@ class MainContent extends Component {
     history.push("/addGuest");
   }
 
-  addCategory() {
+  addCategoryPage() {
     const {
       history
     } = this.props;
@@ -125,7 +125,7 @@ class MainContent extends Component {
     history.push("/addCategory");
   }
 
-  addSubCategory() {
+  addSubCategoryPage() {
     const {
       history
     } = this.props;
@@ -218,17 +218,17 @@ class MainContent extends Component {
   generateButtonPanel(){
     return (
         <div style={this.buttonPanel}>
-          <Button onClick={() => this.addGuest()}
+          <Button onClick={() => this.addGuestPage()}
                   style={this.buttonStyle}
                   variant="primary"
                   type="button">Add Guest</Button>
           <span style={this.span}/>
-          <Button onClick={() => this.addCategory()}
+          <Button onClick={() => this.addCategoryPage()}
                   style={this.buttonStyle}
                   variant="primary"
                   type="button">Add Category</Button>
           <span style={this.span}/>
-          <Button onClick={() => this.addSubCategory()}
+          <Button onClick={() => this.addSubCategoryPage()}
                   style={this.buttonStyle}
                   variant="primary"
                   type="button">Add SubCategory</Button>
