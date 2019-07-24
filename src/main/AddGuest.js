@@ -8,6 +8,7 @@ import Label from "react-bootstrap/FormLabel";
 import Button from "react-bootstrap/Button";
 import {bindActionCreators} from "redux";
 import {doFetchAllCategories, doFetchAllSubCategoriesByCategoryId} from "../redux/actions/serverActions";
+import {updateResources} from "../redux/actions/populateActions";
 import {
     POPULATE_KEY_FETCH_CATEGORIES,
     POPULATE_KEY_FETCH_SUBCATEGORIES,
@@ -37,6 +38,18 @@ class AddGuest extends Component {
         } = this.props;
 
         doFetchAllCategories(POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES)
+    }
+
+    componentWillUnmount() {
+        const {
+            updateResources
+        } = this.props;
+
+        const result = {
+            data: ""
+        };
+
+        updateResources(result, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES)
     }
 
     title = {
@@ -292,6 +305,7 @@ class AddGuest extends Component {
             this.addCategoryPage();
         }
 
+        console.log("SUBBB " + JSON.stringify(subCategories, null, 2))
         //Setting up subcategories
         let subCategoriesJsx = null;
         if (subCategories && subCategories.size !== 0 && subCategories !== "error") {
@@ -339,7 +353,8 @@ const mapStateToProps = state => {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         doFetchAllCategories,
-        doFetchAllSubCategoriesByCategoryId
+        doFetchAllSubCategoriesByCategoryId,
+        updateResources
     }, dispatch);
 }
 
