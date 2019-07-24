@@ -12,7 +12,7 @@ import Table from "react-bootstrap/Table";
 import editIcon from "../media/images/edit-icon.png";
 import removeIcon from "../media/images/delete-icon.png";
 import closeIcon from "../media/images/close-icon.png";
-import {popUp} from "./utils/Util";
+import {popUp} from "../utils/Util";
 import Button from "react-bootstrap/Button";
 
 class MainContent extends Component {
@@ -109,6 +109,30 @@ class MainContent extends Component {
     this.generateContent(id);
   }
 
+  addGuest() {
+    const {
+      history
+    } = this.props;
+
+    history.push("/addGuest");
+  }
+
+  addCategory() {
+    const {
+      history
+    } = this.props;
+
+    history.push("/addCategory");
+  }
+
+  addSubCategory() {
+    const {
+      history
+    } = this.props;
+
+    history.push("/addSubCategory");
+  }
+
   permanentlyRemoveGuest(guestId) {
     const {
       guests,
@@ -194,13 +218,19 @@ class MainContent extends Component {
   generateButtonPanel(){
     return (
         <div style={this.buttonPanel}>
-          <Button style={this.buttonStyle} variant="primary"
+          <Button onClick={() => this.addGuest()}
+                  style={this.buttonStyle}
+                  variant="primary"
                   type="button">Add Guest</Button>
           <span style={this.span}/>
-          <Button style={this.buttonStyle} variant="primary"
+          <Button onClick={() => this.addCategory()}
+                  style={this.buttonStyle}
+                  variant="primary"
                   type="button">Add Category</Button>
           <span style={this.span}/>
-          <Button style={this.buttonStyle} variant="primary"
+          <Button onClick={() => this.addSubCategory()}
+                  style={this.buttonStyle}
+                  variant="primary"
                   type="button">Add SubCategory</Button>
         </div>
     )
