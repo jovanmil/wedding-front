@@ -35,11 +35,6 @@ class AddGuest extends Component {
     display: "block"
   };
 
-  dropDownButton = {
-    display: "block",
-    marginTop: "20px"
-  };
-
   dropDownItem = {
     display: "block",
     marginLeft: "10px",
@@ -86,21 +81,27 @@ class AddGuest extends Component {
 
   generateCategories() {
     return (
-        <DropdownButton style={this.dropDownButton} variant={"secondary"} id="dropdown-basic-button" title="Select Category">
-          <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>Category 1</Dropdown.Item>
-          <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>Category 2</Dropdown.Item>
-          <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>Category 3</Dropdown.Item>
-        </DropdownButton>
+        <div style={this.radioStyle}>
+          <Label>Category</Label>
+          <DropdownButton variant={"secondary"} id="dropdown-basic-button" title="Select Category...">
+            <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>Category 1</Dropdown.Item>
+            <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>Category 2</Dropdown.Item>
+            <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>Category 3</Dropdown.Item>
+          </DropdownButton>
+        </div>
     );
   }
 
   generateSubCategories() {
     return (
-        <DropdownButton style={this.dropDownButton} variant={"secondary"} id="dropdown-basic-button" title="Select SubCategory">
-          <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>SubCategory 1</Dropdown.Item>
-          <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>SubCategory 2</Dropdown.Item>
-          <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>SubCategory 3</Dropdown.Item>
-        </DropdownButton>
+        <div style={this.radioStyle}>
+          <Label>SubCategory</Label>
+          <DropdownButton variant={"secondary"} id="dropdown-basic-button" title="Select SubCategory...">
+            <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>SubCategory 1</Dropdown.Item>
+            <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>SubCategory 2</Dropdown.Item>
+            <Dropdown.Item style={this.dropDownItem} onClick={() => alert("OK")}>SubCategory 3</Dropdown.Item>
+          </DropdownButton>
+        </div>
     );
   }
 
@@ -108,10 +109,12 @@ class AddGuest extends Component {
     return (
         <div style={this.radioStyle}>
           <Label>Invited</Label>
-          <ButtonGroup aria-label="Basic example">
-            <Button variant="secondary">Yes</Button>
-            <Button variant="secondary">No</Button>
-          </ButtonGroup>
+          <div>
+            <ButtonGroup toggle={true} aria-label="Basic example">
+              <Button variant="secondary">Yes</Button>
+              <Button variant="secondary">No</Button>
+            </ButtonGroup>
+          </div>
         </div>
     );
   }
@@ -120,10 +123,12 @@ class AddGuest extends Component {
     return (
         <div style={this.radioStyle}>
           <Label>Confirmed</Label>
-          <ButtonGroup aria-label="Basic example">
-            <Button variant="secondary">Yes</Button>
-            <Button variant="secondary">No</Button>
-          </ButtonGroup>
+          <div>
+            <ButtonGroup aria-label="Basic example">
+              <Button variant="secondary">Yes</Button>
+              <Button variant="secondary">No</Button>
+            </ButtonGroup>
+          </div>
         </div>
     );
   }
@@ -136,7 +141,8 @@ class AddGuest extends Component {
 
     const saveJsx = (
         <div style={this.saveButton}>
-          <Button>Save</Button>
+          <hr/>
+          <Button>Add Wedding Guest</Button>
         </div>
     );
 
