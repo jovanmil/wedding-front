@@ -56,7 +56,7 @@ export function doDeleteSingleGuest(guestId, populateKey, type) {
   const TOKEN = decrypt(window.sessionStorage.getItem("token"));
 
   return (dispatch) => {
-    axios.delete("http://localhost:9005/guests/"+guestId,
+    axios.delete("http://localhost:9005/guests/" + guestId,
         {
           headers: {
             "Authorization": "Bearer " + TOKEN
@@ -74,45 +74,85 @@ export function doDeleteSingleGuest(guestId, populateKey, type) {
 }
 
 export function doFetchAllCategories(populateKey, type) {
-    const TOKEN = decrypt(window.sessionStorage.getItem("token"));
+  const TOKEN = decrypt(window.sessionStorage.getItem("token"));
 
-    return (dispatch) => {
-        axios.get("http://localhost:9005/categories",
-            {
-                headers: {
-                    "Authorization": "Bearer " + TOKEN
-                }
-            }
-        )
-            .then(response => {
-                dispatch(updateResources(response, populateKey, type));
-                // console.log(response.data);
-            })
-            .catch(error => {
-                console.log(error.response.status);
-                dispatch(updateResources("error", populateKey, type));
-            });
-    }
+  return (dispatch) => {
+    axios.get("http://localhost:9005/categories",
+        {
+          headers: {
+            "Authorization": "Bearer " + TOKEN
+          }
+        }
+    )
+        .then(response => {
+          dispatch(updateResources(response, populateKey, type));
+          // console.log(response.data);
+        })
+        .catch(error => {
+          console.log(error.response.status);
+          dispatch(updateResources("error", populateKey, type));
+        });
+  }
 }
 
 export function doFetchAllSubCategoriesByCategoryId(id, populateKey, type) {
-    const TOKEN = decrypt(window.sessionStorage.getItem("token"));
+  const TOKEN = decrypt(window.sessionStorage.getItem("token"));
 
-    return (dispatch) => {
-        axios.get("http://localhost:9005/subcategories/" + id,
-            {
-                headers: {
-                    "Authorization": "Bearer " + TOKEN
-                }
-            }
-        )
-            .then(response => {
-                dispatch(updateResources(response, populateKey, type));
-                // console.log(response.data);
-            })
-            .catch(error => {
-                // console.log(error.response.status);
-                dispatch(updateResources("error", populateKey, type));
-            });
-    }
+  return (dispatch) => {
+    axios.get("http://localhost:9005/subcategories/" + id,
+        {
+          headers: {
+            "Authorization": "Bearer " + TOKEN
+          }
+        }
+    )
+        .then(response => {
+          dispatch(updateResources(response, populateKey, type));
+          // console.log(response.data);
+        })
+        .catch(error => {
+          // console.log(error.response.status);
+          dispatch(updateResources("error", populateKey, type));
+        });
+  }
+}
+
+export function doPostGuest(
+    firstName,
+    lastName,
+    description,
+    invited,
+    confirmed,
+    categoryId,
+    subcategory,
+    userId,
+    populateKey,
+    type) {
+  const TOKEN = decrypt(window.sessionStorage.getItem("token"));
+
+  return (dispatch) => {
+    axios.post("http://localhost:9005/guests/" + categoryId + "/" + subcategory + "/" + userId,
+        {
+          "firstName": firstName,
+          "lastName": lastName,
+          "description": description,
+          "invited": invited,
+          "confirmed": confirmed
+        },
+        {
+          headers: {
+            "Authorization": "Bearer " + TOKEN,
+            "Content-Type": "application/json"
+          }
+        }
+    )
+        .then(response => {
+          dispatch(updateResources("success", populateKey, type));
+        })
+        .catch(error => {
+          console.log(error);
+          dispatch(updateResources("error", populateKey, type));
+          // console.log(error.response.status);
+        });
+  }
 }
