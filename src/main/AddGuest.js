@@ -143,7 +143,11 @@ class AddGuest extends Component {
       selectedCategory = "Select Category..."
     }
     else {
-      selectedCategory = category;
+      categoriesData && categoriesData.forEach((categoryData) => {
+        if (categoryData.get("id") === category) {
+          selectedCategory = categoryData.get("name");
+        }
+      });
     }
 
     const categoriesJsx = [];
@@ -174,7 +178,6 @@ class AddGuest extends Component {
       doFetchAllSubCategoriesByCategoryId
     } = this.props;
     const categoryId = selectCategory.get("id");
-    const categoryName = selectCategory.get("name");
     this.setState({category: categoryId});
     this.setState({subCategory: ""});
     if (selectCategory) {
@@ -193,7 +196,11 @@ class AddGuest extends Component {
       selectedSubcategory = "Select SubCategory..."
     }
     else {
-      selectedSubcategory = subcategory;
+      subCategoriesData && subCategoriesData.forEach((subCategoryData) => {
+        if (subCategoryData.get("id") === subcategory) {
+          selectedSubcategory = subCategoryData.get("name");
+        }
+      });
     }
 
     const subCategoriesJsx = [];
