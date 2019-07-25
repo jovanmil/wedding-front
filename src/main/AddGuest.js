@@ -327,22 +327,22 @@ class AddGuest extends Component {
     } = this.props;
 
     if (!firstName || firstName === "") {
-      popUp("Error", "Wrong first name", null);
+      popUp("Error", "Wrong first name", null, true);
     }
     else if (!lastName || lastName === "") {
-      popUp("Error", "Wrong last name", null);
+      popUp("Error", "Wrong last name", null, true);
     }
     else if (!category || category === "") {
-      popUp("Error", "Wrong category", null);
+      popUp("Error", "Wrong category", null, true);
     }
     else if (!subcategory || subcategory === "") {
-      popUp("Error", "Wrong subcategory", null);
+      popUp("Error", "Wrong subcategory", null, true);
     }
     else if (!invited || invited === "") {
-      popUp("Error", "Wrong invited", null);
+      popUp("Error", "Wrong invited", null, true);
     }
     else if (!confirmed || confirmed === "") {
-      popUp("Error", "Wrong confirmed", null);
+      popUp("Error", "Wrong confirmed", null, true);
     }
     else {
       doPostGuest(firstName, lastName, description, invited, confirmed, category, subcategory, "1", POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
