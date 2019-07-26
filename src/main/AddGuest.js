@@ -43,6 +43,20 @@ class AddGuest extends Component {
     doFetchAllCategories(POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES)
   }
 
+  componentWillReceiveProps(nextProps) {
+    const {
+      guestAdded
+    } = this.props;
+
+    const {
+      guestAdded: nextGuestAdded
+    } = nextProps;
+
+    if (!guestAdded && nextGuestAdded && nextGuestAdded === "success") {
+      this.guestPage();
+    }
+  }
+
   componentWillUnmount() {
     const {
       updateResources
@@ -52,7 +66,8 @@ class AddGuest extends Component {
       data: ""
     };
 
-    updateResources(result, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES)
+    updateResources(result, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
+    updateResources(null, POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
   }
 
   title = {
@@ -352,13 +367,8 @@ class AddGuest extends Component {
   render() {
     const {
       categories,
-      subCategories,
-      guestAdded
+      subCategories
     } = this.props;
-
-    if (guestAdded) {
-      this.guestPage();
-    }
 
     //Setting up categories
     let categoriesJsx = null;

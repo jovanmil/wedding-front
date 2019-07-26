@@ -13,7 +13,6 @@ export default () => (<BrowserRouter>
         <Route path="/addGuest" exact component={AddGuest}/>
         <Route path="/addCategory" exact component={AddCategory}/>
         <Route path="/addSubCategory" exact component={AddSubcategory}/>
-        {/*<Route path="/channel/:channelId" exact component={Channel}/>*/}
       </div>
     </BrowserRouter>
 )
