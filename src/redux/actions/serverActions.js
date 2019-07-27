@@ -182,3 +182,29 @@ export function doPostCategory(categoryName, userId, populateKey, type) {
             });
     }
 }
+
+export function doPostSubCategoryByCategoryId(subCategoryName, categoryId, populateKey, type) {
+    const TOKEN = decrypt(window.sessionStorage.getItem("token"));
+
+    return (dispatch) => {
+        axios.post("http://localhost:9005/subcategories/" + categoryId,
+            {
+                "name": subCategoryName
+            },
+            {
+                headers: {
+                    "Authorization": "Bearer " + TOKEN,
+                    "Content-Type": "application/json"
+                }
+            }
+        )
+            .then(response => {
+                dispatch(updateResources("success", populateKey, type));
+            })
+            .catch(error => {
+                console.log(error);
+                dispatch(updateResources("error", populateKey, type));
+                // console.log(error.response.status);
+            });
+    }
+}
