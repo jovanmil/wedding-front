@@ -3,10 +3,10 @@ import {doDeleteSingleGuest, doFetchAllGuests, doLogin} from "../redux/actions/s
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {
-  POPULATE_KEY_DELETE_GUEST,
-  POPULATE_KEY_FETCH_GUESTS,
-  TYPE_DELETE_GUEST,
-  TYPE_FETCH_GUESTS
+    POPULATE_KEY_DELETE_GUEST,
+    POPULATE_KEY_FETCH_GUESTS,
+    TYPE_DELETE_GUEST,
+    TYPE_FETCH_GUESTS
 } from "../redux/actions/constants";
 import Table from "react-bootstrap/Table";
 import editIcon from "../media/images/edit-icon.png";
@@ -16,268 +16,267 @@ import {popUp} from "../utils/Util";
 import Button from "react-bootstrap/Button";
 
 class MainContent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      editActive: false,
-      selectedId: null,
-      headers: [
-        "Sort No.",
-        "First Name",
-        "Last Name",
-        "Category",
-        "Description",
-        "Invited",
-        "Confirmed",
-        "Edit"
-      ]
+    constructor(props) {
+        super(props);
+        this.state = {
+            editActive: false,
+            selectedId: null,
+            headers: [
+                "Sort No.",
+                "First Name",
+                "Last Name",
+                "Category",
+                "Description",
+                "Invited",
+                "Confirmed",
+                "Edit"
+            ]
+        };
+    }
+
+    componentDidMount() {
+        const {
+            doFetchAllGuests
+        } = this.props;
+
+        doFetchAllGuests(POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS)
+    }
+
+    tableStyle = {
+        marginTop: "20px",
+        marginBottom: "30px",
     };
-  }
 
-  componentDidMount() {
-    const {
-      doFetchAllGuests
-    } = this.props;
+    td = {
+        textAlign: "center"
+    };
 
-    doFetchAllGuests(POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS)
-  }
+    th = {
+        textAlign: "center"
+    };
 
-  tableStyle = {
-    marginTop: "20px",
-    marginBottom: "30px",
-  };
+    span = {
+        marginLeft: "5px",
+        marginRight: "5px"
+    };
 
-  td = {
-    textAlign: "center"
-  };
+    buttonPanel = {
+        marginTop: "20px",
+        textAlign: "left"
+    };
 
-  th = {
-    textAlign: "center"
-  };
+    logoStyle = {
+        width: "20px",
+        cursor: "pointer"
+    };
 
-  span = {
-    marginLeft: "5px",
-    marginRight: "5px"
-  }
+    generateHeader() {
+        const {
+            headers,
+            editActive,
+            selectedId
+        } = this.state;
 
-  buttonPanel = {
-    marginTop: "20px",
-    textAlign: "left"
-  };
+        if (editActive && !selectedId) {
+            headers.splice(7, 0, "Remove");
+        } else {
+            headers.splice(8, 9);
+            headers[7] = "Edit";
+        }
 
-  logoStyle = {
-    width: "20px",
-    cursor: "pointer"
-  };
+        const headersJsx = [];
+        for (let i = 0; i < headers.length; i++) {
+            headersJsx.push(
+                <th key={"header-" + i} style={this.th}>{headers[i]}</th>
+            );
+        }
 
-  generateHeader() {
-    const {
-      headers,
-      editActive,
-      selectedId
-    } = this.state;
-
-    if (editActive && !selectedId) {
-      headers.splice(7, 0, "Remove");
-    }
-    else {
-      headers.splice(8, 9);
-      headers[7] = "Edit";
-    }
-
-    const headersJsx = [];
-    for (let i = 0; i < headers.length; i++) {
-      headersJsx.push(
-          <th key={"header-" + i} style={this.th}>{headers[i]}</th>
-      );
-    }
-
-    return (
-        <thead>
-        <tr>
-          {headersJsx}
-        </tr>
-        </thead>
-    );
-  }
-
-  handleEdit(id) {
-    const {
-      editActive
-    } = this.state;
-
-    this.setState({editActive: !editActive});
-    this.setState({selectedId: id});
-    this.generateContent();
-  }
-
-  handleReEdit(id) {
-    this.setState({editActive: true});
-    this.setState({selectedId: id});
-    this.generateContent();
-  }
-
-  addGuestPage() {
-    const {
-      history
-    } = this.props;
-
-    history.push("/addGuest");
-  }
-
-  addCategoryPage() {
-    const {
-      history
-    } = this.props;
-
-    history.push("/addCategory");
-  }
-
-  addSubCategoryPage() {
-    const {
-      history
-    } = this.props;
-
-    history.push("/addSubCategory");
-  }
-
-  permanentlyRemoveGuest(guestId) {
-    const {
-      guests,
-      doDeleteSingleGuest
-    } = this.props;
-
-    const {
-      editActive
-    } = this.state;
-
-    doDeleteSingleGuest(guestId, POPULATE_KEY_DELETE_GUEST, TYPE_DELETE_GUEST)
-    const removedGuestItems = guests.filter(x => x.id !== guestId);
-    this.setState({editActive: !editActive});
-    this.setState({guests: removedGuestItems});
-  }
-
-  handleRemove(guestId) {
-    if (guestId) {
-      popUp(
-          "Delete guest",
-          "Are you sure you want to do this?",
-          () => this.permanentlyRemoveGuest(guestId)
-      );
-    }
-  }
-
-  generateContent() {
-    const {
-      editActive,
-      selectedId
-    } = this.state;
-
-    const {
-      guests
-    } = this.props;
-
-    const bodyContent = [];
-
-    if (guests && guests.length !== 0) {
-      for (let i = 0; i < guests.size; i++) {
-        bodyContent.push(
-            <tr key={"content-" + i}>
-              <td style={this.td}>{guests.getIn([i, "id"])}</td>
-              <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
-              <td style={this.td}>{guests.getIn([i, "lastName"])}</td>
-              <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
-              <td style={this.td}>{guests.getIn([i, "description"])}</td>
-              <td style={this.td}>{guests.getIn([i, "invited"])}</td>
-              <td style={this.td}>{guests.getIn([i, "confirmed"])}</td>
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  <td key={"content-removeIcon"} style={this.td}>
-                    <img alt={"remove-icon"}
-                         style={this.logoStyle}
-                         src={removeIcon}
-                         onClick={() => this.handleRemove(guests.getIn([i, "id"]))}
-                    />
-                  </td>
-              ) : null}
-
-              {
-                editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                    <td style={this.td}>
-                      <img alt={"close-icon"} style={this.logoStyle} src={closeIcon}
-                           onClick={() => this.handleEdit(guests.getIn([i, "id"]))}/>
-                    </td>
-                ) : (
-                    <td style={this.td}>
-                      <img alt={"edit-icon"} style={this.logoStyle} src={editIcon}
-                           onClick={() => this.handleReEdit(guests.getIn([i, "id"]))}/>
-                    </td>
-                )
-              }
-
+        return (
+            <thead>
+            <tr>
+                {headersJsx}
             </tr>
+            </thead>
         );
-      }
     }
 
-    return (
-        <tbody>
-        {bodyContent}
-        </tbody>
-    );
-  }
+    handleEdit(id) {
+        const {
+            editActive
+        } = this.state;
 
-  generateButtonPanel() {
-    return (
-        <div style={this.buttonPanel}>
-          <Button onClick={() => this.addGuestPage()}
-                  style={this.buttonStyle}
-                  variant="primary"
-                  type="button">Add Guest</Button>
-          <span style={this.span}/>
-          <Button onClick={() => this.addCategoryPage()}
-                  style={this.buttonStyle}
-                  variant="primary"
-                  type="button">Add Category</Button>
-          <span style={this.span}/>
-          <Button onClick={() => this.addSubCategoryPage()}
-                  style={this.buttonStyle}
-                  variant="primary"
-                  type="button">Add SubCategory</Button>
-        </div>
-    )
-  }
+        this.setState({editActive: !editActive});
+        this.setState({selectedId: id});
+        this.generateContent();
+    }
 
-  render() {
-    const tableJsx = (
-        <div>
-          {this.generateButtonPanel()}
-          <Table style={this.tableStyle} striped bordered hover>
-            {this.generateHeader()}
-            {this.generateContent()}
-          </Table>
-        </div>
-    );
+    handleReEdit(id) {
+        this.setState({editActive: true});
+        this.setState({selectedId: id});
+        this.generateContent();
+    }
 
-    return (
-        tableJsx
-    )
-  }
+    addGuestPage() {
+        const {
+            history
+        } = this.props;
+
+        history.push("/addGuest");
+    }
+
+    addCategoryPage() {
+        const {
+            history
+        } = this.props;
+
+        history.push("/addCategory");
+    }
+
+    addSubCategoryPage() {
+        const {
+            history
+        } = this.props;
+
+        history.push("/addSubCategory");
+    }
+
+    permanentlyRemoveGuest(guestId) {
+        const {
+            guests,
+            doDeleteSingleGuest
+        } = this.props;
+
+        const {
+            editActive
+        } = this.state;
+
+        doDeleteSingleGuest(guestId, POPULATE_KEY_DELETE_GUEST, TYPE_DELETE_GUEST)
+        const removedGuestItems = guests.filter(x => x.id !== guestId);
+        this.setState({editActive: !editActive});
+        this.setState({guests: removedGuestItems});
+    }
+
+    handleRemove(guestId) {
+        if (guestId) {
+            popUp(
+                "Delete guest",
+                "Are you sure you want to do this?",
+                () => this.permanentlyRemoveGuest(guestId)
+            );
+        }
+    }
+
+    generateContent() {
+        const {
+            editActive,
+            selectedId
+        } = this.state;
+
+        const {
+            guests
+        } = this.props;
+
+        const bodyContent = [];
+
+        if (guests && guests.length !== 0) {
+            for (let i = 0; i < guests.size; i++) {
+                bodyContent.push(
+                    <tr key={"content-" + i}>
+                        <td style={this.td}>{guests.getIn([i, "id"])}</td>
+                        <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
+                        <td style={this.td}>{guests.getIn([i, "lastName"])}</td>
+                        <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
+                        <td style={this.td}>{guests.getIn([i, "description"])}</td>
+                        <td style={this.td}>{guests.getIn([i, "invited"])}</td>
+                        <td style={this.td}>{guests.getIn([i, "confirmed"])}</td>
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            <td key={"content-removeIcon"} style={this.td}>
+                                <img alt={"remove-icon"}
+                                     style={this.logoStyle}
+                                     src={removeIcon}
+                                     onClick={() => this.handleRemove(guests.getIn([i, "id"]))}
+                                />
+                            </td>
+                        ) : null}
+
+                        {
+                            editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                                <td style={this.td}>
+                                    <img alt={"close-icon"} style={this.logoStyle} src={closeIcon}
+                                         onClick={() => this.handleEdit(guests.getIn([i, "id"]))}/>
+                                </td>
+                            ) : (
+                                <td style={this.td}>
+                                    <img alt={"edit-icon"} style={this.logoStyle} src={editIcon}
+                                         onClick={() => this.handleReEdit(guests.getIn([i, "id"]))}/>
+                                </td>
+                            )
+                        }
+
+                    </tr>
+                );
+            }
+        }
+
+        return (
+            <tbody>
+            {bodyContent}
+            </tbody>
+        );
+    }
+
+    generateButtonPanel() {
+        return (
+            <div style={this.buttonPanel}>
+                <Button onClick={() => this.addGuestPage()}
+                        style={this.buttonStyle}
+                        variant="primary"
+                        type="button">Add Guest</Button>
+                <span style={this.span}/>
+                <Button onClick={() => this.addCategoryPage()}
+                        style={this.buttonStyle}
+                        variant="primary"
+                        type="button">Add Category</Button>
+                <span style={this.span}/>
+                <Button onClick={() => this.addSubCategoryPage()}
+                        style={this.buttonStyle}
+                        variant="primary"
+                        type="button">Add SubCategory</Button>
+            </div>
+        )
+    }
+
+    render() {
+        const tableJsx = (
+            <div>
+                {this.generateButtonPanel()}
+                <Table style={this.tableStyle} striped bordered hover>
+                    {this.generateHeader()}
+                    {this.generateContent()}
+                </Table>
+            </div>
+        );
+
+        return (
+            tableJsx
+        )
+    }
 }
 
 const mapStateToProps = state => {
-  const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
+    const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
 
-  return {
-    guests
-  };
+    return {
+        guests
+    };
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    doLogin,
-    doFetchAllGuests,
-    doDeleteSingleGuest
-  }, dispatch);
+    return bindActionCreators({
+        doLogin,
+        doFetchAllGuests,
+        doDeleteSingleGuest
+    }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainContent);

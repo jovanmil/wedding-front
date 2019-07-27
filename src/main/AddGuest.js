@@ -11,426 +11,453 @@ import {doFetchAllCategories, doFetchAllSubCategoriesByCategoryId, doPostGuest} 
 import {updateResources} from "../redux/actions/populateActions";
 import {popUp} from "../utils/Util";
 import {
-  POPULATE_KEY_ADD_GUEST,
-  POPULATE_KEY_FETCH_CATEGORIES,
-  POPULATE_KEY_FETCH_SUBCATEGORIES,
-  TYPE_ADD_GUEST,
-  TYPE_FETCH_CATEGORIES,
-  TYPE_FETCH_SUBCATEGORIES
+    POPULATE_KEY_ADD_GUEST,
+    POPULATE_KEY_FETCH_CATEGORIES,
+    POPULATE_KEY_FETCH_SUBCATEGORIES,
+    TYPE_ADD_GUEST,
+    TYPE_FETCH_CATEGORIES,
+    TYPE_FETCH_SUBCATEGORIES
 } from "../redux/actions/constants";
 import {connect} from "react-redux";
 
 class AddGuest extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      firstName: "",
-      lastName: "",
-      description: "",
-      category: "",
-      subcategory: "",
-      invited: "false",
-      confirmed: "unknown"
+        this.state = {
+            firstName: "",
+            lastName: "",
+            description: "",
+            category: "",
+            subcategory: "",
+            invited: "false",
+            confirmed: "unknown"
+        }
     }
-  }
 
-  componentDidMount() {
-    const {
-      doFetchAllCategories
-    } = this.props;
-
-    doFetchAllCategories(POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {
-      guestAdded
-    } = this.props;
-
-    const {
-      guestAdded: nextGuestAdded
-    } = nextProps;
-
-    if (!guestAdded && nextGuestAdded && nextGuestAdded === "success") {
-      this.guestPage();
-    }
-  }
-
-  componentWillUnmount() {
-    const {
-      updateResources
-    } = this.props;
-
-    const result = {
-      data: ""
+    span = {
+        marginLeft: "5px",
+        marginRight: "5px"
     };
 
-    updateResources(result, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
-    updateResources(null, POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
-  }
 
-  title = {
-    fontSize: "22px"
-  };
+    componentDidMount() {
+        const {
+            doFetchAllCategories
+        } = this.props;
 
-  panelStyle = {
-    marginTop: "20px",
-    marginBottom: "20px",
-  };
-
-  componentStyle = {
-    marginTop: "10px",
-  };
-
-  commonMargin = {
-    marginTop: "10px",
-    display: "block"
-  };
-
-  dropDownItem = {
-    display: "block",
-    marginLeft: "10px",
-    fontSize: "14px",
-    color: "#303030"
-  };
-
-  generateFirstName() {
-    return (
-        <div style={this.componentStyle}>
-          <InputGroup size="sm" className="mb-3">
-            <InputGroup.Prepend>
-              <Label>Name</Label>
-            </InputGroup.Prepend>
-            <FormControl value={this.state.firstName} onChange={(event) => this.activitySelectFirstName(event)}
-                         aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
-          </InputGroup>
-        </div>
-    )
-  }
-
-  activitySelectFirstName(event) {
-    this.setState({firstName: event.target.value});
-  }
-
-  generateLastName() {
-    return (
-        <div style={this.componentStyle}>
-          <InputGroup size="sm" className="mb-3">
-            <InputGroup.Prepend>
-              <Label>Last Name</Label>
-            </InputGroup.Prepend>
-            <FormControl value={this.state.lastName} onChange={(event) => this.activitySelectLastName(event)}
-                         aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
-          </InputGroup>
-        </div>
-    )
-  }
-
-  activitySelectLastName(event) {
-    this.setState({lastName: event.target.value});
-  }
-
-  generateDescription() {
-    return (
-        <div style={this.componentStyle}>
-          <Form.Group controlId="exampleForm.ControlTextarea1">
-            <Form.Label>Description</Form.Label>
-            <Form.Control value={this.state.description}
-                          onChange={(event) => this.activitySelectDescription(event)} as="textarea" rows="3"/>
-          </Form.Group>
-        </div>
-    )
-  }
-
-  activitySelectDescription(event) {
-    this.setState({description: event.target.value});
-  }
-
-  generateCategories(categoriesData) {
-    const {
-      category
-    } = this.state;
-
-    let selectedCategory = null;
-
-    if (category === "" || !category) {
-      selectedCategory = "Select Category..."
+        doFetchAllCategories(POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES)
     }
-    else {
-      categoriesData && categoriesData.forEach((categoryData) => {
-        if (categoryData.get("id") === category) {
-          selectedCategory = categoryData.get("name");
+
+    componentWillReceiveProps(nextProps) {
+        const {
+            guestAdded
+        } = this.props;
+
+        const {
+            guestAdded: nextGuestAdded
+        } = nextProps;
+
+        if (!guestAdded && nextGuestAdded && nextGuestAdded === "success") {
+            this.guestPage();
         }
-      });
     }
 
-    const categoriesJsx = [];
-    categoriesData.forEach((category) => {
-      const categoryName = category.get("name");
-      const dataJsx = (
-          <Dropdown.Item
-              key={"category-" + category.get("id")}
-              style={this.dropDownItem}
-              onClick={() => this.activitySelectCategory(category)}>
-            {categoryName}
-          </Dropdown.Item>);
-      categoriesJsx.push(dataJsx);
-    });
+    componentWillUnmount() {
+        const {
+            updateResources
+        } = this.props;
 
-    return (
-        <div style={this.commonMargin}>
-          <Label>Category</Label>
-          <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedCategory}>
-            {categoriesJsx}
-          </DropdownButton>
-        </div>
-    );
-  }
+        const result = {
+            data: ""
+        };
 
-  activitySelectCategory(selectCategory) {
-    const {
-      doFetchAllSubCategoriesByCategoryId
-    } = this.props;
-    const categoryId = selectCategory.get("id");
-    this.setState({category: categoryId});
-    this.setState({subCategory: ""});
-    if (selectCategory) {
-      doFetchAllSubCategoriesByCategoryId(categoryId, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
+        updateResources(result, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
+        updateResources(null, POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
     }
-  }
 
-  generateSubCategories(subCategoriesData) {
-    const {
-      subcategory
-    } = this.state;
+    title = {
+        fontSize: "22px"
+    };
 
-    let selectedSubcategory = null;
+    panelStyle = {
+        marginTop: "20px",
+        marginBottom: "20px",
+    };
 
-    if (subcategory === "" || !subcategory) {
-      selectedSubcategory = "Select SubCategory..."
+    componentStyle = {
+        marginTop: "10px",
+    };
+
+    commonMargin = {
+        marginTop: "10px",
+        display: "block"
+    };
+
+    dropDownItem = {
+        display: "block",
+        marginLeft: "10px",
+        fontSize: "14px",
+        color: "#303030"
+    };
+
+    generateFirstName() {
+        return (
+            <div style={this.componentStyle}>
+                <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Prepend>
+                        <Label>Name</Label>
+                    </InputGroup.Prepend>
+                    <FormControl value={this.state.firstName} onChange={(event) => this.activitySelectFirstName(event)}
+                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                </InputGroup>
+            </div>
+        )
     }
-    else {
-      subCategoriesData && subCategoriesData.forEach((subCategoryData) => {
-        if (subCategoryData.get("id") === subcategory) {
-          selectedSubcategory = subCategoryData.get("name");
+
+    activitySelectFirstName(event) {
+        this.setState({firstName: event.target.value});
+    }
+
+    generateLastName() {
+        return (
+            <div style={this.componentStyle}>
+                <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Prepend>
+                        <Label>Last Name</Label>
+                    </InputGroup.Prepend>
+                    <FormControl value={this.state.lastName} onChange={(event) => this.activitySelectLastName(event)}
+                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                </InputGroup>
+            </div>
+        )
+    }
+
+    activitySelectLastName(event) {
+        this.setState({lastName: event.target.value});
+    }
+
+    generateDescription() {
+        return (
+            <div style={this.componentStyle}>
+                <Form.Group controlId="exampleForm.ControlTextarea1">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control value={this.state.description}
+                                  onChange={(event) => this.activitySelectDescription(event)} as="textarea" rows="3"/>
+                </Form.Group>
+            </div>
+        )
+    }
+
+    activitySelectDescription(event) {
+        this.setState({description: event.target.value});
+    }
+
+    generateCategories(categoriesData) {
+        const {
+            category
+        } = this.state;
+
+        let selectedCategory = null;
+
+        if (category === "" || !category) {
+            selectedCategory = "Select Category..."
+        } else {
+            categoriesData && categoriesData.forEach((categoryData) => {
+                if (categoryData.get("id") === category) {
+                    selectedCategory = categoryData.get("name");
+                }
+            });
         }
-      });
+
+        const categoriesJsx = [];
+        categoriesData.forEach((category) => {
+            const categoryName = category.get("name");
+            const dataJsx = (
+                <Dropdown.Item
+                    key={"category-" + category.get("id")}
+                    style={this.dropDownItem}
+                    onClick={() => this.activitySelectCategory(category)}>
+                    {categoryName}
+                </Dropdown.Item>);
+            categoriesJsx.push(dataJsx);
+        });
+
+        return (
+            <div style={this.commonMargin}>
+                <Label>Category</Label>
+                <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedCategory}>
+                    {categoriesJsx}
+                </DropdownButton>
+            </div>
+        );
     }
 
-    const subCategoriesJsx = [];
-    subCategoriesData.forEach((subCategory) => {
-      const subCategoryName = subCategory.get("name");
-      const dataJsx = (
-          <Dropdown.Item
-              key={"category-" + subCategory.get("id")}
-              style={this.dropDownItem}
-              onClick={() => this.activitySelectSubCategory(subCategory)}>
-            {subCategoryName}
-          </Dropdown.Item>);
-      subCategoriesJsx.push(dataJsx);
-    });
-
-    return (
-        <div style={this.commonMargin}>
-          <Label>SubCategory</Label>
-          <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedSubcategory}>
-            {subCategoriesJsx}
-          </DropdownButton>
-        </div>
-    );
-  }
-
-  activitySelectSubCategory(subCategory) {
-    const subCategoryId = subCategory.get("id");
-    this.setState({subcategory: subCategoryId});
-  }
-
-  generateInvited() {
-    const {
-      invited
-    } = this.state;
-
-    let selectedInvited = null;
-
-    if (invited === "" || !invited) {
-      selectedInvited = "Invited..."
-    }
-    else {
-      selectedInvited = invited;
+    activitySelectCategory(selectCategory) {
+        const {
+            doFetchAllSubCategoriesByCategoryId
+        } = this.props;
+        const categoryId = selectCategory.get("id");
+        this.setState({category: categoryId});
+        this.setState({subCategory: ""});
+        if (selectCategory) {
+            doFetchAllSubCategoriesByCategoryId(categoryId, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
+        }
     }
 
-    return (
-        <div style={this.commonMargin}>
-          <Label>Invited</Label>
-          <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedInvited}>
-            <Dropdown.Item style={this.dropDownItem}
-                           onClick={() => this.activitySelectInvited("false")}>false</Dropdown.Item>
-            <Dropdown.Item style={this.dropDownItem}
-                           onClick={() => this.activitySelectInvited("true")}>true</Dropdown.Item>
-          </DropdownButton>
-        </div>
-    );
-  }
+    generateSubCategories(subCategoriesData) {
+        const {
+            subcategory
+        } = this.state;
 
-  activitySelectInvited(selectInvited) {
-    this.setState({invited: selectInvited});
-  }
+        let selectedSubcategory = null;
 
-  generateConfirmed() {
-    const {
-      confirmed
-    } = this.state;
+        if (subcategory === "" || !subcategory) {
+            selectedSubcategory = "Select SubCategory..."
+        } else {
+            subCategoriesData && subCategoriesData.forEach((subCategoryData) => {
+                if (subCategoryData.get("id") === subcategory) {
+                    selectedSubcategory = subCategoryData.get("name");
+                }
+            });
+        }
 
-    let selectedConfirmed = null;
+        const subCategoriesJsx = [];
+        subCategoriesData.forEach((subCategory) => {
+            const subCategoryName = subCategory.get("name");
+            const dataJsx = (
+                <Dropdown.Item
+                    key={"category-" + subCategory.get("id")}
+                    style={this.dropDownItem}
+                    onClick={() => this.activitySelectSubCategory(subCategory)}>
+                    {subCategoryName}
+                </Dropdown.Item>);
+            subCategoriesJsx.push(dataJsx);
+        });
 
-    if (confirmed === "" || !confirmed) {
-      selectedConfirmed = "Confirmed..."
-    }
-    else {
-      selectedConfirmed = confirmed;
-    }
-
-    return (
-        <div style={this.commonMargin}>
-          <Label>Confirmed</Label>
-          <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedConfirmed}>
-            <Dropdown.Item style={this.dropDownItem}
-                           onClick={() => this.activitySelectConfirmed("true")}>true</Dropdown.Item>
-            <Dropdown.Item style={this.dropDownItem}
-                           onClick={() => this.activitySelectConfirmed("false")}>false</Dropdown.Item>
-            <Dropdown.Item style={this.dropDownItem}
-                           onClick={() => this.activitySelectConfirmed("unknown")}>unknown</Dropdown.Item>
-          </DropdownButton>
-        </div>
-    );
-  }
-
-  activitySelectConfirmed(selectConfirmed) {
-    this.setState({confirmed: selectConfirmed});
-  }
-
-  addCategoryPage() {
-    const {
-      history
-    } = this.props;
-
-    history.push("/addCategory");
-  }
-
-  guestPage() {
-    const {
-      history
-    } = this.props;
-
-    history.push("/guests");
-  }
-
-  saveGuest() {
-    const {
-      firstName,
-      lastName,
-      description,
-      category,
-      subcategory,
-      invited,
-      confirmed
-    } = this.state;
-
-    const {
-      doPostGuest
-    } = this.props;
-
-    if (!firstName || firstName === "") {
-      popUp("Error", "Wrong first name", null, true);
-    }
-    else if (!lastName || lastName === "") {
-      popUp("Error", "Wrong last name", null, true);
-    }
-    else if (!category || category === "") {
-      popUp("Error", "Wrong category", null, true);
-    }
-    else if (!subcategory || subcategory === "") {
-      popUp("Error", "Wrong subcategory", null, true);
-    }
-    else if (!invited || invited === "") {
-      popUp("Error", "Wrong invited", null, true);
-    }
-    else if (!confirmed || confirmed === "") {
-      popUp("Error", "Wrong confirmed", null, true);
-    }
-    else {
-      doPostGuest(firstName, lastName, description, invited, confirmed, category, subcategory, "1", POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
-    }
-  }
-
-  render() {
-    const {
-      categories,
-      subCategories
-    } = this.props;
-
-    //Setting up categories
-    let categoriesJsx = null;
-    if (categories && categories.size !== 0 && categories !== "error") {
-      categoriesJsx = this.generateCategories(categories);
-    }
-    else if (categories && categories === "error") {
-      this.addCategoryPage();
+        return (
+            <div style={this.commonMargin}>
+                <Label>SubCategory</Label>
+                <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedSubcategory}>
+                    {subCategoriesJsx}
+                </DropdownButton>
+            </div>
+        );
     }
 
-    //Setting up subcategories
-    let subCategoriesJsx = null;
-    if (subCategories && subCategories.size !== 0 && subCategories !== "error") {
-      subCategoriesJsx = this.generateSubCategories(subCategories);
+    activitySelectSubCategory(subCategory) {
+        const subCategoryId = subCategory.get("id");
+        this.setState({subcategory: subCategoryId});
     }
 
-    const titleJsx = (
-        <div style={this.title}>Add Guest</div>
-    );
+    generateInvited() {
+        const {
+            invited
+        } = this.state;
 
-    const saveJsx = (
-        <div>
-          <hr/>
-          <Button onClick={() => this.saveGuest()}>Add Wedding Guest</Button>
-        </div>
-    );
+        let selectedInvited = null;
 
-    return (
-        <div style={this.panelStyle}>
-          {titleJsx}
-          {this.generateFirstName()}
-          {this.generateLastName()}
-          {this.generateDescription()}
-          {categoriesJsx}
-          {subCategoriesJsx}
-          {this.generateInvited()}
-          {this.generateConfirmed()}
-          {saveJsx}
-        </div>
-    )
-  }
+        if (invited === "" || !invited) {
+            selectedInvited = "Invited..."
+        } else {
+            selectedInvited = invited;
+        }
+
+        return (
+            <div style={this.commonMargin}>
+                <Label>Invited</Label>
+                <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedInvited}>
+                    <Dropdown.Item style={this.dropDownItem}
+                                   onClick={() => this.activitySelectInvited("false")}>false</Dropdown.Item>
+                    <Dropdown.Item style={this.dropDownItem}
+                                   onClick={() => this.activitySelectInvited("true")}>true</Dropdown.Item>
+                </DropdownButton>
+            </div>
+        );
+    }
+
+    activitySelectInvited(selectInvited) {
+        this.setState({invited: selectInvited});
+    }
+
+    generateConfirmed() {
+        const {
+            confirmed
+        } = this.state;
+
+        let selectedConfirmed = null;
+
+        if (confirmed === "" || !confirmed) {
+            selectedConfirmed = "Confirmed..."
+        } else {
+            selectedConfirmed = confirmed;
+        }
+
+        return (
+            <div style={this.commonMargin}>
+                <Label>Confirmed</Label>
+                <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedConfirmed}>
+                    <Dropdown.Item style={this.dropDownItem}
+                                   onClick={() => this.activitySelectConfirmed("true")}>true</Dropdown.Item>
+                    <Dropdown.Item style={this.dropDownItem}
+                                   onClick={() => this.activitySelectConfirmed("false")}>false</Dropdown.Item>
+                    <Dropdown.Item style={this.dropDownItem}
+                                   onClick={() => this.activitySelectConfirmed("unknown")}>unknown</Dropdown.Item>
+                </DropdownButton>
+            </div>
+        );
+    }
+
+    activitySelectConfirmed(selectConfirmed) {
+        this.setState({confirmed: selectConfirmed});
+    }
+
+    addCategoryPage() {
+        const {
+            history
+        } = this.props;
+
+        history.push("/addCategory");
+    }
+
+    addSubCategoryPage() {
+        const {
+            history
+        } = this.props;
+
+        history.push("/addSubCategory");
+    }
+
+    guestPage() {
+        const {
+            history
+        } = this.props;
+
+        history.push("/guests");
+    }
+
+    saveGuest() {
+        const {
+            firstName,
+            lastName,
+            description,
+            category,
+            subcategory,
+            invited,
+            confirmed
+        } = this.state;
+
+        const {
+            doPostGuest
+        } = this.props;
+
+        if (!firstName || firstName === "") {
+            popUp("Error", "Wrong first name", null, true);
+        } else if (!lastName || lastName === "") {
+            popUp("Error", "Wrong last name", null, true);
+        } else if (!category || category === "") {
+            popUp("Error", "Wrong category", null, true);
+        } else if (!subcategory || subcategory === "") {
+            popUp("Error", "Wrong subcategory", null, true);
+        } else if (!invited || invited === "") {
+            popUp("Error", "Wrong invited", null, true);
+        } else if (!confirmed || confirmed === "") {
+            popUp("Error", "Wrong confirmed", null, true);
+        } else {
+            doPostGuest(firstName, lastName, description, invited, confirmed, category, subcategory, "1", POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
+        }
+    }
+
+    generateButtonPanel() {
+        return (
+            <div style={this.buttonPanel}>
+                <Button onClick={() => this.guestPage()}
+                        style={this.buttonStyle}
+                        variant="primary"
+                        type="button">Guests</Button>
+                <span style={this.span}/>
+                <Button onClick={() => this.addCategoryPage()}
+                        style={this.buttonStyle}
+                        variant="primary"
+                        type="button">Add Category</Button>
+                <span style={this.span}/>
+                <Button onClick={() => this.addSubCategoryPage()}
+                        style={this.buttonStyle}
+                        variant="primary"
+                        type="button">Add SubCategory</Button>
+            </div>
+        )
+    }
+
+    render() {
+        const {
+            categories,
+            subCategories
+        } = this.props;
+
+        //Setting up categories
+        let categoriesJsx = null;
+        if (categories && categories.size !== 0 && categories !== "error") {
+            categoriesJsx = this.generateCategories(categories);
+        } else if (categories && categories === "error") {
+            this.addCategoryPage();
+        }
+
+        //Setting up subcategories
+        let subCategoriesJsx = null;
+        if (subCategories && subCategories.size !== 0 && subCategories !== "error") {
+            subCategoriesJsx = this.generateSubCategories(subCategories);
+        }
+
+        const titleJsx = (
+            <div style={this.title}>Add Guest</div>
+        );
+
+        const saveJsx = (
+            <div>
+                <hr/>
+                <Button onClick={() => this.saveGuest()}>Add Wedding Guest</Button>
+            </div>
+        );
+
+
+        return (
+            <div style={this.panelStyle}>
+                {this.generateButtonPanel()}
+                <hr/>
+                {titleJsx}
+                {this.generateFirstName()}
+                {this.generateLastName()}
+                {this.generateDescription()}
+                {categoriesJsx}
+                {subCategoriesJsx}
+                {this.generateInvited()}
+                {this.generateConfirmed()}
+                {saveJsx}
+            </div>
+        )
+    }
 }
 
 const mapStateToProps = state => {
-  const categories = state.datareducer.get(POPULATE_KEY_FETCH_CATEGORIES);
-  const subCategories = state.datareducer.get(POPULATE_KEY_FETCH_SUBCATEGORIES);
-  const guestAdded = state.datareducer.get(POPULATE_KEY_ADD_GUEST);
+    const categories = state.datareducer.get(POPULATE_KEY_FETCH_CATEGORIES);
+    const subCategories = state.datareducer.get(POPULATE_KEY_FETCH_SUBCATEGORIES);
+    const guestAdded = state.datareducer.get(POPULATE_KEY_ADD_GUEST);
 
-  return {
-    categories,
-    subCategories,
-    guestAdded
-  };
+    return {
+        categories,
+        subCategories,
+        guestAdded
+    };
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    doFetchAllCategories,
-    doFetchAllSubCategoriesByCategoryId,
-    doPostGuest,
-    updateResources
-  }, dispatch);
+    return bindActionCreators({
+        doFetchAllCategories,
+        doFetchAllSubCategoriesByCategoryId,
+        doPostGuest,
+        updateResources
+    }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddGuest);
