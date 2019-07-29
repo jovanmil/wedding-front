@@ -22,21 +22,6 @@ class Home extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const {
-      authToken,
-      userDetails
-    } = this.props;
-
-    const {
-      authToken: prevAuthToken
-    } = prevProps;
-
-    if ((authToken && !prevAuthToken && userDetails)) {
-      this.nextPath();
-    }
-  }
-
   loginPath() {
     const {
       history

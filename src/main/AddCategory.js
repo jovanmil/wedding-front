@@ -142,9 +142,10 @@ class AddCategory extends Component {
 
 
     generateButtonPanel() {
+        const userEmail = "(" + decrypt(window.sessionStorage.getItem("userEmail")) + ")";
         return (
             <div style={this.wrapper}>
-                <div style={this.logout} onClick={() => this.logoutUser()}>Logout</div>
+                <div style={this.logout} onClick={() => this.logoutUser()}>{userEmail + " Logout"}</div>
                 <div style={this.buttonPanel}>
                     <Button onClick={() => this.guestPage()}
                             style={this.buttonStyle}
