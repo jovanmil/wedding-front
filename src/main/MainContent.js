@@ -1,13 +1,16 @@
 import React, {Component} from "react";
-import {doDeleteSingleGuest, doFetchAllGuests} from "../redux/actions/serverActions";
+import {doDeleteSingleGuest, doFetchAllGuests, doLogin} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {
-  POPULATE_KEY_DELETE_GUEST,
-  POPULATE_KEY_FETCH_GUESTS,
-  TYPE_DELETE_GUEST,
-  TYPE_FETCH_GUESTS
+    POPULATE_KEY_DELETE_GUEST,
+    POPULATE_KEY_FETCH_GUESTS,
+    POPULATE_KEY_LOG_IN,
+    TYPE_DELETE_GUEST,
+    TYPE_FETCH_GUESTS,
+    TYPE_LOG_IN
 } from "../redux/actions/constants";
+import {updateResources} from "../redux/actions/populateActions";
 import Table from "react-bootstrap/Table";
 import editIcon from "../media/images/edit-icon.png";
 import removeIcon from "../media/images/delete-icon.png";
@@ -41,8 +44,14 @@ class MainContent extends Component {
       } = this.props;
 
       const userId = decrypt(window.sessionStorage.getItem("userId"));
+        const authToken = decrypt(window.sessionStorage.getItem("token"));
 
-      doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
+
+        if (!authToken) {
+            this.logoutUser();
+        } else {
+            doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
+        }
     }
 
     tableStyle = {
@@ -70,6 +79,17 @@ class MainContent extends Component {
 
     logoStyle = {
         width: "20px",
+        cursor: "pointer"
+    };
+
+    wrapper = {
+        display: "inline"
+    };
+
+    logout = {
+        float: "right",
+        textDecoration: "underline",
+        fontWeight: "bold",
         cursor: "pointer"
     };
 
@@ -228,24 +248,44 @@ class MainContent extends Component {
         );
     }
 
+    logoutUser() {
+        const {
+            history,
+            updateResources
+        } = this.props;
+
+        const result = {
+            data: {
+                "access_token": null
+            }
+        };
+        updateResources(result, POPULATE_KEY_LOG_IN, TYPE_LOG_IN);
+        history.push("/");
+    }
+
+
     generateButtonPanel() {
         return (
-            <div style={this.buttonPanel}>
-                <Button onClick={() => this.addGuestPage()}
-                        style={this.buttonStyle}
-                        variant="primary"
-                        type="button">Add Guest</Button>
-                <span style={this.span}/>
-                <Button onClick={() => this.addCategoryPage()}
-                        style={this.buttonStyle}
-                        variant="primary"
-                        type="button">Add Category</Button>
-                <span style={this.span}/>
-                <Button onClick={() => this.addSubCategoryPage()}
-                        style={this.buttonStyle}
-                        variant="primary"
-                        type="button">Add SubCategory</Button>
+            <div style={this.wrapper}>
+                <div style={this.logout} onClick={() => this.logoutUser()}>Logout</div>
+                <div style={this.buttonPanel}>
+                    <Button onClick={() => this.addGuestPage()}
+                            style={this.buttonStyle}
+                            variant="primary"
+                            type="button">Add Guest</Button>
+                    <span style={this.span}/>
+                    <Button onClick={() => this.addCategoryPage()}
+                            style={this.buttonStyle}
+                            variant="primary"
+                            type="button">Add Category</Button>
+                    <span style={this.span}/>
+                    <Button onClick={() => this.addSubCategoryPage()}
+                            style={this.buttonStyle}
+                            variant="primary"
+                            type="button">Add SubCategory</Button>
+                </div>
             </div>
+
         )
     }
 
@@ -269,15 +309,17 @@ class MainContent extends Component {
 const mapStateToProps = state => {
     const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
 
-  return {
+    return {
         guests,
     };
 };
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
+        doLogin,
         doFetchAllGuests,
-        doDeleteSingleGuest
+        doDeleteSingleGuest,
+        updateResources
     }, dispatch);
 }
 

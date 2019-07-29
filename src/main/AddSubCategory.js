@@ -6,8 +6,10 @@ import Button from "react-bootstrap/Button";
 import {
     POPULATE_KEY_ADD_SUBCATEGORY,
     POPULATE_KEY_FETCH_CATEGORIES,
+    POPULATE_KEY_LOG_IN,
     TYPE_ADD_SUBCATEGORY,
-    TYPE_FETCH_CATEGORIES
+    TYPE_FETCH_CATEGORIES,
+    TYPE_LOG_IN
 } from "../redux/actions/constants";
 import {popUp} from "../utils/Util";
 import {doFetchAllCategories, doPostSubCategoryByCategoryId} from "../redux/actions/serverActions";
@@ -16,6 +18,7 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import {decrypt} from "../redux/crypting/crypt";
 
 class AddSubCategory extends Component {
     constructor(props) {
@@ -63,6 +66,17 @@ class AddSubCategory extends Component {
         color: "#303030"
     };
 
+    wrapper = {
+        display: "inline"
+    };
+
+    logout = {
+        float: "right",
+        textDecoration: "underline",
+        fontWeight: "bold",
+        cursor: "pointer"
+    };
+
     componentWillReceiveProps(nextProps) {
         const {
             subCategoryAdded
@@ -82,7 +96,13 @@ class AddSubCategory extends Component {
             doFetchAllCategories
         } = this.props;
 
-        doFetchAllCategories(POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES);
+        const authToken = decrypt(window.sessionStorage.getItem("token"));
+
+        if (!authToken) {
+            this.logoutUser();
+        } else {
+            doFetchAllCategories(POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES);
+        }
     }
 
     componentWillUnmount() {
@@ -127,22 +147,39 @@ class AddSubCategory extends Component {
         history.push("/addCategory");
     }
 
+    logoutUser() {
+        const {
+            history,
+            updateResources
+        } = this.props;
+
+        const result = {
+            data: {
+                "access_token": null
+            }
+        };
+        updateResources(result, POPULATE_KEY_LOG_IN, TYPE_LOG_IN);
+        history.push("/");
+    }
+
     generateButtonPanel() {
         return (
-            <div style={this.buttonPanel}>
-                <Button onClick={() => this.guestPage()}
-                        style={this.buttonStyle}
-                        variant="primary"
-                        type="button">Guests</Button>
-                <span style={this.span}/>
-                <Button onClick={() => this.addCategoryPage()}
-                        style={this.buttonStyle}
-                        variant="primary"
-                        type="button">Add Category</Button>
+            <div style={this.wrapper}>
+                <div style={this.logout} onClick={() => this.logoutUser()}>Logout</div>
+                <div style={this.buttonPanel}>
+                    <Button onClick={() => this.guestPage()}
+                            style={this.buttonStyle}
+                            variant="primary"
+                            type="button">Guests</Button>
+                    <span style={this.span}/>
+                    <Button onClick={() => this.addCategoryPage()}
+                            style={this.buttonStyle}
+                            variant="primary"
+                            type="button">Add Category</Button>
+                </div>
             </div>
         )
     }
-
 
     generateCategories(categoriesData) {
         const {

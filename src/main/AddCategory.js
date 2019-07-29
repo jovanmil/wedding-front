@@ -5,10 +5,16 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import {bindActionCreators} from "redux";
 import {doPostCategory} from "../redux/actions/serverActions";
-import {POPULATE_KEY_ADD_CATEGORY, TYPE_ADD_CATEGORY,} from "../redux/actions/constants";
+import {
+    POPULATE_KEY_ADD_CATEGORY,
+    POPULATE_KEY_LOG_IN,
+    TYPE_ADD_CATEGORY,
+    TYPE_LOG_IN,
+} from "../redux/actions/constants";
 import {updateResources} from "../redux/actions/populateActions";
 import {connect} from "react-redux";
 import {popUp} from "../utils/Util";
+import {decrypt} from "../redux/crypting/crypt";
 
 
 class AddCategory extends Component {
@@ -44,6 +50,17 @@ class AddCategory extends Component {
         marginRight: "5px"
     };
 
+    wrapper = {
+        display: "inline"
+    };
+
+    logout = {
+        float: "right",
+        textDecoration: "underline",
+        fontWeight: "bold",
+        cursor: "pointer"
+    };
+
     componentWillReceiveProps(nextProps) {
         const {
             categoryAdded
@@ -55,6 +72,14 @@ class AddCategory extends Component {
 
         if (!categoryAdded && nextCategoryAdded && nextCategoryAdded === "success") {
             this.guestPage();
+        }
+    }
+
+    componentDidMount() {
+        const authToken = decrypt(window.sessionStorage.getItem("token"));
+
+        if (!authToken) {
+            this.logoutUser();
         }
     }
 
@@ -100,18 +125,37 @@ class AddCategory extends Component {
         history.push("/addSubCategory");
     }
 
+    logoutUser() {
+        const {
+            history,
+            updateResources
+        } = this.props;
+
+        const result = {
+            data: {
+                "access_token": null
+            }
+        };
+        updateResources(result, POPULATE_KEY_LOG_IN, TYPE_LOG_IN);
+        history.push("/");
+    }
+
+
     generateButtonPanel() {
         return (
-            <div style={this.buttonPanel}>
-                <Button onClick={() => this.guestPage()}
-                        style={this.buttonStyle}
-                        variant="primary"
-                        type="button">Guests</Button>
-                <span style={this.span}/>
-                <Button onClick={() => this.addSubCategoryPage()}
-                        style={this.buttonStyle}
-                        variant="primary"
-                        type="button">Add SubCategory</Button>
+            <div style={this.wrapper}>
+                <div style={this.logout} onClick={() => this.logoutUser()}>Logout</div>
+                <div style={this.buttonPanel}>
+                    <Button onClick={() => this.guestPage()}
+                            style={this.buttonStyle}
+                            variant="primary"
+                            type="button">Guests</Button>
+                    <span style={this.span}/>
+                    <Button onClick={() => this.addSubCategoryPage()}
+                            style={this.buttonStyle}
+                            variant="primary"
+                            type="button">Add SubCategory</Button>
+                </div>
             </div>
         )
     }
@@ -132,28 +176,28 @@ class AddCategory extends Component {
         }
     }
 
-  render() {
-      const titleJsx = (
-          <div style={this.title}>Add Category</div>
-      );
+    render() {
+        const titleJsx = (
+            <div style={this.title}>Add Category</div>
+        );
 
-      const saveJsx = (
-          <div>
-              <hr/>
-              <Button onClick={() => this.saveCategory()}>Add Category</Button>
-          </div>
-      );
+        const saveJsx = (
+            <div>
+                <hr/>
+                <Button onClick={() => this.saveCategory()}>Add Category</Button>
+            </div>
+        );
 
-    return (
-        <div style={this.panelStyle}>
-            {this.generateButtonPanel()}
-            <hr/>
-            {titleJsx}
-            {this.generateCategory()}
-            {saveJsx}
-        </div>
-    )
-  }
+        return (
+            <div style={this.panelStyle}>
+                {this.generateButtonPanel()}
+                <hr/>
+                {titleJsx}
+                {this.generateCategory()}
+                {saveJsx}
+            </div>
+        )
+    }
 }
 
 const mapStateToProps = state => {
