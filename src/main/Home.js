@@ -3,7 +3,7 @@ import {doLogin} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import LoginForm from ".././forms/LoginForm";
-import {POPULATE_KEY_LOG_IN, TYPE_LOG_IN} from "../redux/actions/constants";
+import {POPULATE_KEY_LOG_IN, POPULATE_KEY_USER_DETAILS, TYPE_LOG_IN} from "../redux/actions/constants";
 
 class Home extends Component {
 
@@ -58,7 +58,8 @@ class Home extends Component {
 
   render() {
     const {
-      authToken
+      authToken,
+      userDetails
     } = this.props;
 
     const formJsx = [];
@@ -80,7 +81,7 @@ class Home extends Component {
           </div>
       )
     }
-    else if (authToken) {
+    else if (authToken && userDetails) {
       this.nextPath();
     }
 
@@ -94,9 +95,11 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   const authToken = state.loginReducer.get(POPULATE_KEY_LOG_IN);
+  const userDetails = state.datareducer.get(POPULATE_KEY_USER_DETAILS);
 
   return {
-    authToken
+    authToken,
+    userDetails
   };
 };
 

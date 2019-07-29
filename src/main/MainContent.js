@@ -4,7 +4,7 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {
   POPULATE_KEY_DELETE_GUEST,
-  POPULATE_KEY_FETCH_GUESTS, POPULATE_KEY_USER_DETAILS,
+  POPULATE_KEY_FETCH_GUESTS,
   TYPE_DELETE_GUEST,
   TYPE_FETCH_GUESTS
 } from "../redux/actions/constants";
