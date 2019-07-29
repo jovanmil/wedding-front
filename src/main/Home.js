@@ -4,6 +4,7 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import LoginForm from ".././forms/LoginForm";
 import {POPULATE_KEY_LOG_IN, POPULATE_KEY_USER_DETAILS, TYPE_LOG_IN} from "../redux/actions/constants";
+import {decrypt} from "../redux/crypting/crypt";
 
 class Home extends Component {
 
@@ -20,14 +21,6 @@ class Home extends Component {
       email: "",
       password: ""
     }
-  }
-
-  loginPath() {
-    const {
-      history
-    } = this.props;
-
-    history.push("/");
   }
 
   nextPath() {
@@ -66,9 +59,10 @@ class Home extends Component {
 
   render() {
     const {
-      authToken,
-      userDetails
+        authToken
     } = this.props;
+
+      const userId = decrypt(window.sessionStorage.getItem("userId"));
 
     const formJsx = [];
     formJsx.push(
@@ -88,8 +82,7 @@ class Home extends Component {
             <small>Bad credential (email/password)!</small>
           </div>
       )
-    }
-    else if (authToken && userDetails) {
+    } else if (authToken && userId) {
       this.nextPath();
     }
 

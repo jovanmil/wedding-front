@@ -46,7 +46,6 @@ class MainContent extends Component {
       const userId = decrypt(window.sessionStorage.getItem("userId"));
         const authToken = decrypt(window.sessionStorage.getItem("token"));
 
-
         if (!authToken) {
             this.logoutUser();
         } else {
