@@ -3,8 +3,13 @@ import {doLogin} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import LoginForm from ".././forms/LoginForm";
-import {POPULATE_KEY_LOG_IN, POPULATE_KEY_USER_DETAILS, TYPE_LOG_IN} from "../redux/actions/constants";
-import {decrypt} from "../redux/crypting/crypt";
+import {
+    POPULATE_KEY_LOG_IN,
+    POPULATE_KEY_USER_DETAILS,
+    TYPE_LOG_IN,
+    TYPE_USER_DETAILS
+} from "../redux/actions/constants";
+import {updateResources} from "../redux/actions/populateActions";
 
 class Home extends Component {
 
@@ -39,6 +44,14 @@ class Home extends Component {
     doLogin(this.state, POPULATE_KEY_LOG_IN, TYPE_LOG_IN);
   }
 
+    componentWillMount() {
+        const {
+            updateResources
+        } = this.props;
+
+        updateResources(null, POPULATE_KEY_USER_DETAILS, TYPE_USER_DETAILS);
+    }
+
   handleKeyPress = (e) => {
     const {
       doLogin
@@ -59,10 +72,9 @@ class Home extends Component {
 
   render() {
     const {
-        authToken
+        authToken,
+        userDetails
     } = this.props;
-
-      const userId = decrypt(window.sessionStorage.getItem("userId"));
 
     const formJsx = [];
     formJsx.push(
@@ -82,7 +94,7 @@ class Home extends Component {
             <small>Bad credential (email/password)!</small>
           </div>
       )
-    } else if (authToken && userId) {
+    } else if (authToken && userDetails) {
       this.nextPath();
     }
 
@@ -106,7 +118,8 @@ const mapStateToProps = state => {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    doLogin
+      doLogin,
+      updateResources
   }, dispatch);
 }
 

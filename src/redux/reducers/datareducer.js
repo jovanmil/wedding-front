@@ -32,11 +32,13 @@ const datareducer = (im_state = new Map(), action = {}) => {
     case TYPE_USER_DETAILS: {
       const response = fromJS(action.payload);
 
-      const ecryptedId = encrypt(response.getIn(["data", "id"]).toString());
-      sessionStorage.setItem("userId", ecryptedId);
+      if (response) {
+        const ecryptedId = encrypt(response.getIn(["data", "id"]).toString());
+        sessionStorage.setItem("userId", ecryptedId);
 
-      const ecryptedMail = encrypt(response.getIn(["data", "email"]));
-      sessionStorage.setItem("userEmail", ecryptedMail);
+        const ecryptedMail = encrypt(response.getIn(["data", "email"]));
+        sessionStorage.setItem("userEmail", ecryptedMail);
+      }
 
       im_state = im_state.setIn([populateKey], response);
       return im_state;
