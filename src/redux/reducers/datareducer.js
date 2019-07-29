@@ -8,6 +8,7 @@ import {
   TYPE_FETCH_CATEGORIES,
   TYPE_FETCH_GUESTS,
   TYPE_FETCH_SUBCATEGORIES,
+  TYPE_UPDATE_GUEST,
   TYPE_USER_DETAILS
 } from "../actions/constants";
 import {encrypt} from "../crypting/crypt";
@@ -97,6 +98,13 @@ const datareducer = (im_state = new Map(), action = {}) => {
     }
 
     case TYPE_ADD_SUBCATEGORY: {
+      const response = fromJS(action.payload);
+
+      im_state = im_state.setIn([populateKey], response);
+      return im_state;
+    }
+
+    case TYPE_UPDATE_GUEST: {
       const response = fromJS(action.payload);
 
       im_state = im_state.setIn([populateKey], response);

@@ -230,3 +230,35 @@ export function doPostSubCategoryByCategoryId(subCategoryName, categoryId, popul
         });
   }
 }
+
+export function doUpdateGuest(guestId, firstName, lastName, description, invited, confirmed, category, subcategory, populateKey, type) {
+    const TOKEN = decrypt(window.sessionStorage.getItem("token"));
+
+    return (dispatch) => {
+        axios.put("http://localhost:9005/guests/" + guestId,
+            {
+                "firstName": firstName,
+                "lastName": lastName,
+                "description": description,
+                // "category": category,
+                // "subcategory": subcategory,
+                "invited": invited,
+                "confirmed": confirmed
+            },
+            {
+                headers: {
+                    "Authorization": "Bearer " + TOKEN,
+                    "Content-Type": "application/json"
+                }
+            }
+        )
+            .then(response => {
+                dispatch(updateResources(response, populateKey, type));
+            })
+            .catch(error => {
+                console.log(error);
+                dispatch(updateResources("error", populateKey, type));
+                // console.log(error.response.status);
+            });
+    }
+}

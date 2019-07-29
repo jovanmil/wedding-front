@@ -1,14 +1,16 @@
 import React, {Component} from "react";
-import {doDeleteSingleGuest, doFetchAllGuests, doLogin} from "../redux/actions/serverActions";
+import {doDeleteSingleGuest, doFetchAllGuests, doLogin, doUpdateGuest} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {
     POPULATE_KEY_DELETE_GUEST,
     POPULATE_KEY_FETCH_GUESTS,
     POPULATE_KEY_LOG_IN,
+    POPULATE_KEY_UPDATE_GUEST,
     TYPE_DELETE_GUEST,
     TYPE_FETCH_GUESTS,
-    TYPE_LOG_IN
+    TYPE_LOG_IN,
+    TYPE_UPDATE_GUEST
 } from "../redux/actions/constants";
 import {updateResources} from "../redux/actions/populateActions";
 import Table from "react-bootstrap/Table";
@@ -18,6 +20,8 @@ import closeIcon from "../media/images/close-icon.png";
 import {popUp} from "../utils/Util";
 import Button from "react-bootstrap/Button";
 import {decrypt} from "../redux/crypting/crypt";
+import InputGroup from "react-bootstrap/InputGroup";
+import FormControl from "react-bootstrap/FormControl";
 
 class MainContent extends Component {
     constructor(props) {
@@ -34,7 +38,14 @@ class MainContent extends Component {
                 "Invited",
                 "Confirmed",
                 "Edit"
-            ]
+            ],
+            firstName: "",
+            lastName: "",
+            description: "",
+            category: "",
+            subcategory: "",
+            invited: "false",
+            confirmed: "unknown"
         };
     }
 
@@ -51,6 +62,24 @@ class MainContent extends Component {
         } else {
             doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {
+            guestUpdate,
+            doFetchAllGuests
+        } = this.props;
+
+        const {
+            guestUpdate: nextGuestUpdate
+        } = nextProps;
+
+        const userId = decrypt(window.sessionStorage.getItem("userId"));
+
+        if (guestUpdate && guestUpdate !== nextGuestUpdate) {
+            doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
+        }
+
     }
 
     tableStyle = {
@@ -122,6 +151,12 @@ class MainContent extends Component {
         );
     }
 
+    resetInputTextOnHanldeEdit() {
+        this.setState({firstName: ""});
+        this.setState({lastName: ""});
+        this.setState({description: ""});
+    }
+
     handleEdit(id) {
         const {
             editActive
@@ -129,12 +164,44 @@ class MainContent extends Component {
 
         this.setState({editActive: !editActive});
         this.setState({selectedId: id});
+        this.resetInputTextOnHanldeEdit();
         this.generateContent();
+        this.saveGuestChanges(id);
+    }
+
+    saveGuestChanges(id) {
+        const {
+            firstName,
+            lastName,
+            description,
+            category,
+            subcategory,
+            invited,
+            confirmed
+        } = this.state;
+
+        const {
+            doUpdateGuest
+        } = this.props;
+
+        doUpdateGuest(
+            id,
+            firstName,
+            lastName,
+            description,
+            invited,
+            confirmed,
+            category,
+            subcategory,
+            POPULATE_KEY_UPDATE_GUEST,
+            TYPE_UPDATE_GUEST
+        );
     }
 
     handleReEdit(id) {
         this.setState({editActive: true});
         this.setState({selectedId: id});
+        this.resetInputTextOnHanldeEdit();
         this.generateContent();
     }
 
@@ -188,6 +255,61 @@ class MainContent extends Component {
         }
     }
 
+    inputStyle = {
+        margin: "0px",
+        border: "0px",
+        width: "150px"
+    };
+
+    generateEditFirstName(firstNameEdit) {
+        return (
+            <td>
+                <InputGroup>
+                    <FormControl style={this.inputStyle} value={this.state.firstName || firstNameEdit}
+                                 onChange={(event) => this.activitySelectFirstName(event)}
+                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                </InputGroup>
+            </td>
+        )
+    }
+
+    activitySelectFirstName(event) {
+        this.setState({firstName: event.target.value});
+    }
+
+    generateEditLastName(lastNameEdit) {
+        return (
+            <td>
+                <InputGroup>
+                    <FormControl style={this.inputStyle} value={this.state.lastName || lastNameEdit}
+                                 onChange={(event) => this.activitySelectLastName(event)}
+                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                </InputGroup>
+            </td>
+        )
+    }
+
+    activitySelectLastName(event) {
+        this.setState({lastName: event.target.value});
+    }
+
+    generateEditDescription(descriptionEdit) {
+        return (
+            <td>
+                <InputGroup>
+                    <FormControl style={this.inputStyle} value={this.state.description || descriptionEdit}
+                                 onChange={(event) => this.activitySelectDescription(event)}
+                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                </InputGroup>
+            </td>
+        )
+    }
+
+    activitySelectDescription(event) {
+        this.setState({description: event.target.value});
+    }
+
+
     generateContent() {
         const {
             editActive,
@@ -205,10 +327,22 @@ class MainContent extends Component {
                 bodyContent.push(
                     <tr key={"content-" + i}>
                         <td style={this.td}>{guests.getIn([i, "id"])}</td>
-                        <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
-                        <td style={this.td}>{guests.getIn([i, "lastName"])}</td>
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateEditFirstName(guests.getIn([i, "firstName"]))
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
+                        )}
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateEditLastName(guests.getIn([i, "lastName"]))
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "lastName"])}</td>
+                        )}
                         <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
-                        <td style={this.td}>{guests.getIn([i, "description"])}</td>
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateEditDescription(guests.getIn([i, "description"]))
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "description"])}</td>
+                        )}
                         <td style={this.td}>{guests.getIn([i, "invited"])}</td>
                         <td style={this.td}>{guests.getIn([i, "confirmed"])}</td>
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
@@ -309,9 +443,11 @@ class MainContent extends Component {
 
 const mapStateToProps = state => {
     const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
+    const guestUpdate = state.datareducer.get(POPULATE_KEY_UPDATE_GUEST);
 
     return {
         guests,
+        guestUpdate
     };
 };
 
@@ -320,7 +456,8 @@ function mapDispatchToProps(dispatch) {
         doLogin,
         doFetchAllGuests,
         doDeleteSingleGuest,
-        updateResources
+        updateResources,
+        doUpdateGuest
     }, dispatch);
 }
 
