@@ -95,11 +95,11 @@ export function doDeleteSingleGuest(guestId, populateKey, type) {
   }
 }
 
-export function doFetchAllCategories(populateKey, type) {
+export function doFetchAllCategories(userId, populateKey, type) {
   const TOKEN = decrypt(window.sessionStorage.getItem("token"));
 
   return (dispatch) => {
-    axios.get("http://localhost:9005/categories",
+      axios.get("http://localhost:9005/categories/" + userId,
         {
           headers: {
             "Authorization": "Bearer " + TOKEN

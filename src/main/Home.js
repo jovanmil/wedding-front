@@ -24,14 +24,15 @@ class Home extends Component {
 
   componentDidUpdate(prevProps) {
     const {
-      authToken
+      authToken,
+      userDetails
     } = this.props;
 
     const {
       authToken: prevAuthToken
     } = prevProps;
 
-    if ((authToken && !prevAuthToken)) {
+    if ((authToken && !prevAuthToken && userDetails)) {
       this.nextPath();
     }
   }

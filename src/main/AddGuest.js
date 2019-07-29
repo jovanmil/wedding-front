@@ -62,11 +62,12 @@ class AddGuest extends Component {
         } = this.props;
 
         const authToken = decrypt(window.sessionStorage.getItem("token"));
+        const userId = decrypt(window.sessionStorage.getItem("userId"));
 
         if (!authToken) {
             this.logoutUser();
         } else {
-            doFetchAllCategories(POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES)
+            doFetchAllCategories(userId, POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES)
         }
     }
 

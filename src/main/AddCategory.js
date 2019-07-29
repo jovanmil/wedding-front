@@ -169,10 +169,12 @@ class AddCategory extends Component {
             doPostCategory
         } = this.props;
 
+        const userId = decrypt(window.sessionStorage.getItem("userId"));
+
         if (!category || category === "") {
             popUp("Error", "Wrong category name", null, true);
         } else {
-            doPostCategory(category, "1", POPULATE_KEY_ADD_CATEGORY, TYPE_ADD_CATEGORY);
+            doPostCategory(category, userId, POPULATE_KEY_ADD_CATEGORY, TYPE_ADD_CATEGORY);
         }
     }
 
