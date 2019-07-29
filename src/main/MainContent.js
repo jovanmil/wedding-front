@@ -76,10 +76,9 @@ class MainContent extends Component {
 
         const userId = decrypt(window.sessionStorage.getItem("userId"));
 
-        if (guestUpdate && guestUpdate !== nextGuestUpdate) {
+        if (nextGuestUpdate && guestUpdate !== nextGuestUpdate) {
             doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
         }
-
     }
 
     tableStyle = {
