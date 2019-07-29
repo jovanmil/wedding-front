@@ -1,12 +1,12 @@
 import React, {Component} from "react";
-import {doDeleteSingleGuest, doFetchAllGuests, doLogin} from "../redux/actions/serverActions";
+import {doDeleteSingleGuest, doFetchAllGuests} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {
-    POPULATE_KEY_DELETE_GUEST,
-    POPULATE_KEY_FETCH_GUESTS,
-    TYPE_DELETE_GUEST,
-    TYPE_FETCH_GUESTS
+  POPULATE_KEY_DELETE_GUEST,
+  POPULATE_KEY_FETCH_GUESTS, POPULATE_KEY_USER_DETAILS,
+  TYPE_DELETE_GUEST,
+  TYPE_FETCH_GUESTS
 } from "../redux/actions/constants";
 import Table from "react-bootstrap/Table";
 import editIcon from "../media/images/edit-icon.png";
@@ -14,6 +14,7 @@ import removeIcon from "../media/images/delete-icon.png";
 import closeIcon from "../media/images/close-icon.png";
 import {popUp} from "../utils/Util";
 import Button from "react-bootstrap/Button";
+import {decrypt} from "../redux/crypting/crypt";
 
 class MainContent extends Component {
     constructor(props) {
@@ -34,12 +35,14 @@ class MainContent extends Component {
         };
     }
 
-    componentDidMount() {
-        const {
-            doFetchAllGuests
-        } = this.props;
+    componentDidMount(){
+      const {
+        doFetchAllGuests
+      } = this.props;
 
-        doFetchAllGuests(POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS)
+      const userId = decrypt(window.sessionStorage.getItem("userId"));
+
+      doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
     }
 
     tableStyle = {
@@ -266,14 +269,13 @@ class MainContent extends Component {
 const mapStateToProps = state => {
     const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
 
-    return {
-        guests
+  return {
+        guests,
     };
 };
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        doLogin,
         doFetchAllGuests,
         doDeleteSingleGuest
     }, dispatch);

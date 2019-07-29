@@ -1,14 +1,16 @@
 import {fromJS, Map} from "immutable";
 import {
-    POPULATE_KEY_FETCH_GUESTS,
-    TYPE_ADD_CATEGORY,
-    TYPE_ADD_GUEST,
-    TYPE_ADD_SUBCATEGORY,
-    TYPE_DELETE_GUEST,
-    TYPE_FETCH_CATEGORIES,
-    TYPE_FETCH_GUESTS,
-    TYPE_FETCH_SUBCATEGORIES
+  POPULATE_KEY_FETCH_GUESTS,
+  TYPE_ADD_CATEGORY,
+  TYPE_ADD_GUEST,
+  TYPE_ADD_SUBCATEGORY,
+  TYPE_DELETE_GUEST,
+  TYPE_FETCH_CATEGORIES,
+  TYPE_FETCH_GUESTS,
+  TYPE_FETCH_SUBCATEGORIES,
+  TYPE_USER_DETAILS
 } from "../actions/constants";
+import {encrypt} from "../crypting/crypt";
 
 const datareducer = (im_state = new Map(), action = {}) => {
   const populateKey = action.populateKey;
@@ -24,6 +26,19 @@ const datareducer = (im_state = new Map(), action = {}) => {
         im_state = im_state.setIn([populateKey], response);
       }
 
+      return im_state;
+    }
+
+    case TYPE_USER_DETAILS: {
+      const response = fromJS(action.payload);
+
+      const ecryptedId = encrypt(response.getIn(["data", "id"]).toString());
+      sessionStorage.setItem("userId", ecryptedId);
+
+      const ecryptedMail = encrypt(response.getIn(["data", "email"]));
+      sessionStorage.setItem("userEmail", ecryptedMail);
+
+      im_state = im_state.setIn([populateKey], response);
       return im_state;
     }
 
@@ -75,16 +90,16 @@ const datareducer = (im_state = new Map(), action = {}) => {
     case TYPE_ADD_CATEGORY: {
       const response = fromJS(action.payload);
 
-        im_state = im_state.setIn([populateKey], response);
-        return im_state;
+      im_state = im_state.setIn([populateKey], response);
+      return im_state;
     }
 
-      case TYPE_ADD_SUBCATEGORY: {
-          const response = fromJS(action.payload);
+    case TYPE_ADD_SUBCATEGORY: {
+      const response = fromJS(action.payload);
 
-          im_state = im_state.setIn([populateKey], response);
-          return im_state;
-      }
+      im_state = im_state.setIn([populateKey], response);
+      return im_state;
+    }
 
     default:
       return im_state;

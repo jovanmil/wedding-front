@@ -11,14 +11,15 @@ import {doFetchAllCategories, doFetchAllSubCategoriesByCategoryId, doPostGuest} 
 import {updateResources} from "../redux/actions/populateActions";
 import {popUp} from "../utils/Util";
 import {
-    POPULATE_KEY_ADD_GUEST,
-    POPULATE_KEY_FETCH_CATEGORIES,
-    POPULATE_KEY_FETCH_SUBCATEGORIES,
-    TYPE_ADD_GUEST,
-    TYPE_FETCH_CATEGORIES,
-    TYPE_FETCH_SUBCATEGORIES
+  POPULATE_KEY_ADD_GUEST,
+  POPULATE_KEY_FETCH_CATEGORIES,
+  POPULATE_KEY_FETCH_SUBCATEGORIES, POPULATE_KEY_USER_DETAILS,
+  TYPE_ADD_GUEST,
+  TYPE_FETCH_CATEGORIES,
+  TYPE_FETCH_SUBCATEGORIES
 } from "../redux/actions/constants";
 import {connect} from "react-redux";
+import {decrypt} from "../redux/crypting/crypt";
 
 class AddGuest extends Component {
     constructor(props) {
@@ -344,14 +345,16 @@ class AddGuest extends Component {
             category,
             subcategory,
             invited,
-            confirmed
+            confirmed,
         } = this.state;
 
         const {
             doPostGuest
         } = this.props;
 
-        if (!firstName || firstName === "") {
+      const userId = decrypt(window.sessionStorage.getItem("userId"));
+
+      if (!firstName || firstName === "") {
             popUp("Error", "Wrong first name", null, true);
         } else if (!lastName || lastName === "") {
             popUp("Error", "Wrong last name", null, true);
@@ -364,7 +367,10 @@ class AddGuest extends Component {
         } else if (!confirmed || confirmed === "") {
             popUp("Error", "Wrong confirmed", null, true);
         } else {
-            doPostGuest(firstName, lastName, description, invited, confirmed, category, subcategory, "1", POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
+            doPostGuest(
+                firstName, lastName, description,
+                invited, confirmed, category, subcategory,
+                userId, POPULATE_KEY_ADD_GUEST, TYPE_ADD_GUEST);
         }
     }
 
@@ -443,11 +449,13 @@ const mapStateToProps = state => {
     const categories = state.datareducer.get(POPULATE_KEY_FETCH_CATEGORIES);
     const subCategories = state.datareducer.get(POPULATE_KEY_FETCH_SUBCATEGORIES);
     const guestAdded = state.datareducer.get(POPULATE_KEY_ADD_GUEST);
+    const userDetails = state.datareducer.get(POPULATE_KEY_USER_DETAILS);
 
-    return {
+  return {
         categories,
         subCategories,
-        guestAdded
+        guestAdded,
+        userDetails
     };
 };
 
