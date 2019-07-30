@@ -1,13 +1,21 @@
 import React, {Component} from "react";
-import {doDeleteSingleGuest, doFetchAllGuests, doLogin, doUpdateGuest} from "../redux/actions/serverActions";
+import {
+    doDeleteSingleGuest,
+    doFetchAllCategories,
+    doFetchAllGuests,
+    doLogin,
+    doUpdateGuest
+} from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {
     POPULATE_KEY_DELETE_GUEST,
+    POPULATE_KEY_FETCH_CATEGORIES,
     POPULATE_KEY_FETCH_GUESTS,
     POPULATE_KEY_LOG_IN,
     POPULATE_KEY_UPDATE_GUEST,
     TYPE_DELETE_GUEST,
+    TYPE_FETCH_CATEGORIES,
     TYPE_FETCH_GUESTS,
     TYPE_LOG_IN,
     TYPE_UPDATE_GUEST
@@ -22,6 +30,8 @@ import Button from "react-bootstrap/Button";
 import {decrypt} from "../redux/crypting/crypt";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import Dropdown from "react-bootstrap/Dropdown";
 
 class MainContent extends Component {
     constructor(props) {
@@ -30,7 +40,7 @@ class MainContent extends Component {
             editActive: false,
             selectedId: null,
             headers: [
-                "Sort No.",
+                "ID",
                 "First Name",
                 "Last Name",
                 "Category",
@@ -49,25 +59,28 @@ class MainContent extends Component {
         };
     }
 
-    componentDidMount(){
-      const {
-        doFetchAllGuests
-      } = this.props;
+    componentDidMount() {
+        const {
+            doFetchAllGuests,
+            doFetchAllCategories
+        } = this.props;
 
-      const userId = decrypt(window.sessionStorage.getItem("userId"));
+        const userId = decrypt(window.sessionStorage.getItem("userId"));
         const authToken = decrypt(window.sessionStorage.getItem("token"));
 
         if (!authToken) {
             this.logoutUser();
         } else {
             doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
+            doFetchAllCategories(userId, POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES);
         }
     }
 
     componentWillReceiveProps(nextProps) {
         const {
             guestUpdate,
-            doFetchAllGuests
+            doFetchAllGuests,
+            doFetchAllCategories
         } = this.props;
 
         const {
@@ -78,6 +91,7 @@ class MainContent extends Component {
 
         if (nextGuestUpdate && guestUpdate !== nextGuestUpdate) {
             doFetchAllGuests(userId, POPULATE_KEY_FETCH_GUESTS, TYPE_FETCH_GUESTS);
+            doFetchAllCategories(userId, POPULATE_KEY_FETCH_CATEGORIES, TYPE_FETCH_CATEGORIES);
         }
     }
 
@@ -97,6 +111,17 @@ class MainContent extends Component {
     span = {
         marginLeft: "5px",
         marginRight: "5px"
+    };
+
+    commonMargin = {
+        display: "block"
+    };
+
+    dropDownItem = {
+        display: "block",
+        marginLeft: "10px",
+        fontSize: "14px",
+        color: "#303030"
     };
 
     buttonPanel = {
@@ -154,6 +179,8 @@ class MainContent extends Component {
         this.setState({firstName: list.getIn([position, "firstName"])});
         this.setState({lastName: list.getIn([position, "lastName"])});
         this.setState({description: list.getIn([position, "description"])});
+        this.setState({invited: list.getIn([position, "invited"])});
+        this.setState({confirmed: list.getIn([position, "confirmed"])});
     }
 
     handleEdit(id) {
@@ -309,6 +336,48 @@ class MainContent extends Component {
         this.setState({description: event.target.value});
     }
 
+    generateInvited(invitedEdit) {
+        return (
+            <td>
+                <div style={this.commonMargin}>
+                    <DropdownButton variant={"secondary"} id="dropdown-basic-button"
+                                    title={this.state.invited || invitedEdit}>
+                        <Dropdown.Item style={this.dropDownItem}
+                                       onClick={() => this.activitySelectInvited("false")}>false</Dropdown.Item>
+                        <Dropdown.Item style={this.dropDownItem}
+                                       onClick={() => this.activitySelectInvited("true")}>true</Dropdown.Item>
+                    </DropdownButton>
+                </div>
+            </td>
+        );
+    }
+
+    activitySelectInvited(selectInvited) {
+        this.setState({invited: selectInvited});
+    }
+
+    generateConfirmed(confirmedEdit) {
+        return (
+            <td>
+                <div style={this.commonMargin}>
+                    <DropdownButton variant={"secondary"} id="dropdown-basic-button"
+                                    title={this.state.confirmed || confirmedEdit}>
+                        <Dropdown.Item style={this.dropDownItem}
+                                       onClick={() => this.activitySelectConfirmed("true")}>true</Dropdown.Item>
+                        <Dropdown.Item style={this.dropDownItem}
+                                       onClick={() => this.activitySelectConfirmed("false")}>false</Dropdown.Item>
+                        <Dropdown.Item style={this.dropDownItem}
+                                       onClick={() => this.activitySelectConfirmed("unknown")}>unknown</Dropdown.Item>
+                    </DropdownButton>
+                </div>
+            </td>
+        );
+    }
+
+    activitySelectConfirmed(selectConfirmed) {
+        this.setState({confirmed: selectConfirmed});
+    }
+
 
     generateContent() {
         const {
@@ -343,8 +412,19 @@ class MainContent extends Component {
                         ) : (
                             <td style={this.td}>{guests.getIn([i, "description"])}</td>
                         )}
-                        <td style={this.td}>{guests.getIn([i, "invited"])}</td>
-                        <td style={this.td}>{guests.getIn([i, "confirmed"])}</td>
+
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateInvited(guests.getIn([i, "invited"]))
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "invited"])}</td>
+                        )}
+
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateConfirmed(guests.getIn([i, "confirmed"]))
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "confirmed"])}</td>
+                        )}
+
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
                             <td key={"content-removeIcon"} style={this.td}>
                                 <img alt={"remove-icon"}
@@ -443,11 +523,13 @@ class MainContent extends Component {
 
 const mapStateToProps = state => {
     const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
+    const categories = state.datareducer.get(POPULATE_KEY_FETCH_CATEGORIES);
     const guestUpdate = state.datareducer.get(POPULATE_KEY_UPDATE_GUEST);
 
     return {
         guests,
-        guestUpdate
+        guestUpdate,
+        categories
     };
 };
 
@@ -457,7 +539,8 @@ function mapDispatchToProps(dispatch) {
         doFetchAllGuests,
         doDeleteSingleGuest,
         updateResources,
-        doUpdateGuest
+        doUpdateGuest,
+        doFetchAllCategories
     }, dispatch);
 }
 
