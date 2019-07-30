@@ -150,10 +150,10 @@ class MainContent extends Component {
         );
     }
 
-    resetInputTextOnHanldeEdit() {
-        this.setState({firstName: ""});
-        this.setState({lastName: ""});
-        this.setState({description: ""});
+    resetInputTextOnHanldeEdit(id, list, position) {
+        this.setState({firstName: list.getIn([position, "firstName"])});
+        this.setState({lastName: list.getIn([position, "lastName"])});
+        this.setState({description: list.getIn([position, "description"])});
     }
 
     handleEdit(id) {
@@ -165,15 +165,13 @@ class MainContent extends Component {
         this.setState({selectedId: id});
         this.generateContent();
 
-        popUp("Save Changes?",
-            "Would you like to save changes",
-            () => this.saveGuestChanges(id));
+        this.saveGuestChanges(id);
     }
 
-    handleReEdit(id) {
+    handleReEdit(id, list, position) {
         this.setState({editActive: true});
         this.setState({selectedId: id});
-        this.resetInputTextOnHanldeEdit();
+        this.resetInputTextOnHanldeEdit(id, list, position);
         this.generateContent();
     }
 
@@ -262,13 +260,14 @@ class MainContent extends Component {
         width: "150px"
     };
 
-    generateEditFirstName(firstNameEdit) {
+    generateEditFirstName(firstNameEdit, list, position) {
         return (
             <td>
                 <InputGroup>
                     <FormControl style={this.inputStyle} value={this.state.firstName || firstNameEdit}
                                  onChange={(event) => this.activitySelectFirstName(event)}
-                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"
+                    />
                 </InputGroup>
             </td>
         )
@@ -329,7 +328,7 @@ class MainContent extends Component {
                     <tr key={"content-" + i}>
                         <td style={this.td}>{guests.getIn([i, "id"])}</td>
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                            this.generateEditFirstName(guests.getIn([i, "firstName"]))
+                            this.generateEditFirstName(guests.getIn([i, "firstName"]), guests, i)
                         ) : (
                             <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
                         )}
@@ -365,7 +364,7 @@ class MainContent extends Component {
                             ) : (
                                 <td style={this.td}>
                                     <img alt={"edit-icon"} style={this.logoStyle} src={editIcon}
-                                         onClick={() => this.handleReEdit(guests.getIn([i, "id"]))}/>
+                                         onClick={() => this.handleReEdit(guests.getIn([i, "id"]), guests, i)}/>
                                 </td>
                             )
                         }
