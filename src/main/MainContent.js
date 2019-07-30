@@ -163,9 +163,18 @@ class MainContent extends Component {
 
         this.setState({editActive: !editActive});
         this.setState({selectedId: id});
+        this.generateContent();
+
+        popUp("Save Changes?",
+            "Would you like to save changes",
+            () => this.saveGuestChanges(id));
+    }
+
+    handleReEdit(id) {
+        this.setState({editActive: true});
+        this.setState({selectedId: id});
         this.resetInputTextOnHanldeEdit();
         this.generateContent();
-        this.saveGuestChanges(id);
     }
 
     saveGuestChanges(id) {
@@ -195,13 +204,6 @@ class MainContent extends Component {
             POPULATE_KEY_UPDATE_GUEST,
             TYPE_UPDATE_GUEST
         );
-    }
-
-    handleReEdit(id) {
-        this.setState({editActive: true});
-        this.setState({selectedId: id});
-        this.resetInputTextOnHanldeEdit();
-        this.generateContent();
     }
 
     addGuestPage() {
