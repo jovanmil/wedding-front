@@ -378,6 +378,59 @@ class MainContent extends Component {
         this.setState({confirmed: selectConfirmed});
     }
 
+    generateCategories(categoryEdit, list) {
+        // const {
+        //     category
+        // } = this.state;
+        //
+        // let selectedCategory = null;
+        //
+        // if (category === "" || !category) {
+        //     selectedCategory = "Select Category..."
+        // } else {
+        //     categoriesData && categoriesData.forEach((categoryData) => {
+        //         if (categoryData.get("id") === category) {
+        //             selectedCategory = categoryData.get("name");
+        //         }
+        //     });
+        // }
+        //
+        const categoriesJsx = [];
+        list.forEach((category) => {
+            const categoryName = category.get("name");
+            const dataJsx = (
+                <Dropdown.Item
+                    key={"category-" + category.get("id")}
+                    style={this.dropDownItem}
+                    onClick={() => this.activitySelectCategory(category)}>
+                    {categoryName}
+                </Dropdown.Item>);
+            categoriesJsx.push(dataJsx);
+        });
+
+        return (
+            <td>
+                <div style={this.commonMargin}>
+                    <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={categoryEdit}>
+                        {categoriesJsx}
+                    </DropdownButton>
+                </div>
+            </td>
+        );
+    }
+
+    activitySelectCategory(selectCategory) {
+        // const {
+        //     doFetchAllSubCategoriesByCategoryId
+        // } = this.props;
+        // const categoryId = selectCategory.get("id");
+        // this.setState({category: categoryId});
+        // this.setState({subCategory: ""});
+        // if (selectCategory) {
+        //     doFetchAllSubCategoriesByCategoryId(categoryId, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
+        // }
+    }
+
 
     generateContent() {
         const {
@@ -386,12 +439,13 @@ class MainContent extends Component {
         } = this.state;
 
         const {
-            guests
+            guests,
+            categories
         } = this.props;
 
         const bodyContent = [];
 
-        if (guests && guests.length !== 0) {
+        if (guests && guests.length !== 0 && categories) {
             for (let i = 0; i < guests.size; i++) {
                 bodyContent.push(
                     <tr key={"content-" + i}>
@@ -406,7 +460,13 @@ class MainContent extends Component {
                         ) : (
                             <td style={this.td}>{guests.getIn([i, "lastName"])}</td>
                         )}
-                        <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
+
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateCategories(guests.getIn([i, "category", "name"]), categories)
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
+                        )}
+
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
                             this.generateEditDescription(guests.getIn([i, "description"]))
                         ) : (
