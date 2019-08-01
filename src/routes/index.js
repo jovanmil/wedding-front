@@ -6,9 +6,9 @@ import AddGuest from "../main/AddGuest";
 import AddCategory from "../main/AddCategory";
 import AddSubcategory from "../main/AddSubCategory";
 
-export default () => (<BrowserRouter>
+export default () => (<BrowserRouter basename={"/wedding"}>
         <div>
-            <Route path={["/home", "/"]} exact component={Home}/>
+            <Route path="/" exact component={Home}/>
             <Route path="/guests" exact component={MainContent}/>
             <Route path="/addGuest" exact component={AddGuest}/>
             <Route path="/addCategory" exact component={AddCategory}/>
