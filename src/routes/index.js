@@ -1,12 +1,12 @@
 import React from "react";
-import {BrowserRouter, Route} from "react-router-dom";
+import {HashRouter, Route} from "react-router-dom";
 import Home from "../main/Home";
 import MainContent from "../main/MainContent";
 import AddGuest from "../main/AddGuest";
 import AddCategory from "../main/AddCategory";
 import AddSubcategory from "../main/AddSubCategory";
 
-export default () => (<BrowserRouter basename={"/wedding"}>
+export default () => (<HashRouter>
         <div>
             <Route path="/" exact component={Home}/>
             <Route path="/guests" exact component={MainContent}/>
@@ -14,5 +14,5 @@ export default () => (<BrowserRouter basename={"/wedding"}>
             <Route path="/addCategory" exact component={AddCategory}/>
             <Route path="/addSubCategory" exact component={AddSubcategory}/>
         </div>
-    </BrowserRouter>
+    </HashRouter>
 )
