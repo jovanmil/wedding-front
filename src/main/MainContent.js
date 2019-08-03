@@ -3,6 +3,7 @@ import {
     doDeleteSingleGuest,
     doFetchAllCategories,
     doFetchAllGuests,
+    doFetchAllSubCategoriesByCategoryId,
     doLogin,
     doUpdateGuest
 } from "../redux/actions/serverActions";
@@ -12,11 +13,13 @@ import {
     POPULATE_KEY_DELETE_GUEST,
     POPULATE_KEY_FETCH_CATEGORIES,
     POPULATE_KEY_FETCH_GUESTS,
+    POPULATE_KEY_FETCH_SUBCATEGORIES,
     POPULATE_KEY_LOG_IN,
     POPULATE_KEY_UPDATE_GUEST,
     TYPE_DELETE_GUEST,
     TYPE_FETCH_CATEGORIES,
     TYPE_FETCH_GUESTS,
+    TYPE_FETCH_SUBCATEGORIES,
     TYPE_LOG_IN,
     TYPE_UPDATE_GUEST
 } from "../redux/actions/constants";
@@ -44,14 +47,17 @@ class MainContent extends Component {
                 "First Name",
                 "Last Name",
                 "Category",
+                "Subcategory",
                 "Description",
                 "Invited",
                 "Confirmed",
-                "Edit"
+                "Table No",
+                "Edit",
             ],
             firstName: "",
             lastName: "",
             description: "",
+            tableNo: "",
             category: "",
             subcategory: "",
             invited: "false",
@@ -80,11 +86,11 @@ class MainContent extends Component {
         const {
             guestUpdate,
             doFetchAllGuests,
-            doFetchAllCategories
+            doFetchAllCategories,
         } = this.props;
 
         const {
-            guestUpdate: nextGuestUpdate
+            guestUpdate: nextGuestUpdate,
         } = nextProps;
 
         const userId = decrypt(window.sessionStorage.getItem("userId"));
@@ -153,10 +159,10 @@ class MainContent extends Component {
         } = this.state;
 
         if (editActive && !selectedId) {
-            headers.splice(7, 0, "Remove");
+            headers.splice(9, 0, "Remove");
         } else {
-            headers.splice(8, 9);
-            headers[7] = "Edit";
+            headers.splice(10, 11);
+            headers[9] = "Edit";
         }
 
         const headersJsx = [];
@@ -181,9 +187,10 @@ class MainContent extends Component {
         this.setState({description: list.getIn([position, "description"])});
         this.setState({invited: list.getIn([position, "invited"])});
         this.setState({confirmed: list.getIn([position, "confirmed"])});
+        this.setState({tableNo: list.getIn([position, "tableNo"])});
     }
 
-    handleEdit(id) {
+    handleEdit(id, list, position) {
         const {
             editActive
         } = this.state;
@@ -192,7 +199,7 @@ class MainContent extends Component {
         this.setState({selectedId: id});
         this.generateContent();
 
-        this.saveGuestChanges(id);
+        this.saveGuestChanges(id, list, position);
     }
 
     handleReEdit(id, list, position) {
@@ -202,7 +209,7 @@ class MainContent extends Component {
         this.generateContent();
     }
 
-    saveGuestChanges(id) {
+    saveGuestChanges(id, list, position) {
         const {
             firstName,
             lastName,
@@ -210,8 +217,37 @@ class MainContent extends Component {
             category,
             subcategory,
             invited,
-            confirmed
+            confirmed,
+            tableNo
         } = this.state;
+
+        let firstNameFinal = null;
+        if (firstName === "") {
+            firstNameFinal = list.getIn([position, "firstName"]);
+        } else {
+            firstNameFinal = firstName;
+        }
+
+        let lastNameFinal = null;
+        if (lastName === "") {
+            lastNameFinal = list.getIn([position, "lastName"]);
+        } else {
+            lastNameFinal = lastName;
+        }
+
+        let categoryFinal = null;
+        if (category === "") {
+            categoryFinal = list.getIn([position, "category", "id"]);
+        } else {
+            categoryFinal = category;
+        }
+
+        let subCategoryFinal = null;
+        if (subcategory === "") {
+            subCategoryFinal = list.getIn([position, "subcategory", "id"]);
+        } else {
+            subCategoryFinal = subcategory;
+        }
 
         const {
             doUpdateGuest
@@ -219,13 +255,14 @@ class MainContent extends Component {
 
         doUpdateGuest(
             id,
-            firstName,
-            lastName,
+            firstNameFinal,
+            lastNameFinal,
             description,
             invited,
             confirmed,
-            category,
-            subcategory,
+            categoryFinal,
+            subCategoryFinal,
+            tableNo,
             POPULATE_KEY_UPDATE_GUEST,
             TYPE_UPDATE_GUEST
         );
@@ -287,11 +324,11 @@ class MainContent extends Component {
         width: "150px"
     };
 
-    generateEditFirstName(firstNameEdit, list, position) {
+    generateEditFirstName() {
         return (
             <td>
                 <InputGroup>
-                    <FormControl style={this.inputStyle} value={this.state.firstName || firstNameEdit}
+                    <FormControl style={this.inputStyle} value={this.state.firstName}
                                  onChange={(event) => this.activitySelectFirstName(event)}
                                  aria-label="Small" aria-describedby="inputGroup-sizing-sm"
                     />
@@ -304,11 +341,11 @@ class MainContent extends Component {
         this.setState({firstName: event.target.value});
     }
 
-    generateEditLastName(lastNameEdit) {
+    generateEditLastName() {
         return (
             <td>
                 <InputGroup>
-                    <FormControl style={this.inputStyle} value={this.state.lastName || lastNameEdit}
+                    <FormControl style={this.inputStyle} value={this.state.lastName}
                                  onChange={(event) => this.activitySelectLastName(event)}
                                  aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
                 </InputGroup>
@@ -320,11 +357,11 @@ class MainContent extends Component {
         this.setState({lastName: event.target.value});
     }
 
-    generateEditDescription(descriptionEdit) {
+    generateEditDescription() {
         return (
             <td>
                 <InputGroup>
-                    <FormControl style={this.inputStyle} value={this.state.description || descriptionEdit}
+                    <FormControl style={this.inputStyle} value={this.state.description}
                                  onChange={(event) => this.activitySelectDescription(event)}
                                  aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
                 </InputGroup>
@@ -334,6 +371,22 @@ class MainContent extends Component {
 
     activitySelectDescription(event) {
         this.setState({description: event.target.value});
+    }
+
+    generateEditTableNumber() {
+        return (
+            <td>
+                <InputGroup>
+                    <FormControl style={this.inputStyle} value={this.state.tableNo}
+                                 onChange={(event) => this.activitySelectTableNumber(event)}
+                                 aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                </InputGroup>
+            </td>
+        )
+    }
+
+    activitySelectTableNumber(event) {
+        this.setState({tableNo: event.target.value});
     }
 
     generateInvited(invitedEdit) {
@@ -379,22 +432,22 @@ class MainContent extends Component {
     }
 
     generateCategories(categoryEdit, list) {
-        // const {
-        //     category
-        // } = this.state;
-        //
-        // let selectedCategory = null;
-        //
-        // if (category === "" || !category) {
-        //     selectedCategory = "Select Category..."
-        // } else {
-        //     categoriesData && categoriesData.forEach((categoryData) => {
-        //         if (categoryData.get("id") === category) {
-        //             selectedCategory = categoryData.get("name");
-        //         }
-        //     });
-        // }
-        //
+        const {
+            category
+        } = this.state;
+
+        let selectedCategory = null;
+
+        if (category === "" || !category) {
+            selectedCategory = categoryEdit.get("name");
+        } else {
+            list && list.forEach((categoryData) => {
+                if (categoryData.get("id") === category) {
+                    selectedCategory = categoryData.get("name");
+                }
+            });
+        }
+
         const categoriesJsx = [];
         list.forEach((category) => {
             const categoryName = category.get("name");
@@ -411,7 +464,7 @@ class MainContent extends Component {
         return (
             <td>
                 <div style={this.commonMargin}>
-                    <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={categoryEdit}>
+                    <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedCategory}>
                         {categoriesJsx}
                     </DropdownButton>
                 </div>
@@ -420,15 +473,61 @@ class MainContent extends Component {
     }
 
     activitySelectCategory(selectCategory) {
-        // const {
-        //     doFetchAllSubCategoriesByCategoryId
-        // } = this.props;
-        // const categoryId = selectCategory.get("id");
-        // this.setState({category: categoryId});
-        // this.setState({subCategory: ""});
-        // if (selectCategory) {
-        //     doFetchAllSubCategoriesByCategoryId(categoryId, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
-        // }
+        const {
+            doFetchAllSubCategoriesByCategoryId
+        } = this.props;
+        const categoryId = selectCategory.get("id");
+        this.setState({category: categoryId});
+        this.setState({subCategory: ""});
+        if (selectCategory) {
+            doFetchAllSubCategoriesByCategoryId(categoryId, POPULATE_KEY_FETCH_SUBCATEGORIES, TYPE_FETCH_SUBCATEGORIES);
+        }
+    }
+
+    generateSubCategory(subCategoryEdit, list) {
+        const {
+            subcategory,
+        } = this.state;
+
+        let selectedSubcategory = null;
+
+        if (subcategory === "" || !subcategory) {
+            selectedSubcategory = subCategoryEdit.get("name");
+        } else {
+            list && list.forEach((subCategoryData) => {
+                if (subCategoryData.get("id") === subcategory) {
+                    selectedSubcategory = subCategoryData.get("name");
+                }
+            });
+        }
+
+        const subCategoriesJsx = [];
+        list && list.forEach((subCategory) => {
+            const subCategoryName = subCategory.get("name");
+            const dataJsx = (
+                <Dropdown.Item
+                    key={"category-" + subCategory.get("id")}
+                    style={this.dropDownItem}
+                    onClick={() => this.activitySelectSubCategory(subCategory)}>
+                    {subCategoryName}
+                </Dropdown.Item>);
+            subCategoriesJsx.push(dataJsx);
+        });
+
+        return (
+            <td>
+                <div style={this.commonMargin}>
+                    <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedSubcategory}>
+                        {subCategoriesJsx}
+                    </DropdownButton>
+                </div>
+            </td>
+        );
+    }
+
+    activitySelectSubCategory(subCategory) {
+        const subCategoryId = subCategory.get("id");
+        this.setState({subcategory: subCategoryId});
     }
 
 
@@ -440,7 +539,8 @@ class MainContent extends Component {
 
         const {
             guests,
-            categories
+            categories,
+            subCategories
         } = this.props;
 
         const bodyContent = [];
@@ -451,7 +551,7 @@ class MainContent extends Component {
                     <tr key={"content-" + i}>
                         <td style={this.td}>{guests.getIn([i, "id"])}</td>
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                            this.generateEditFirstName(guests.getIn([i, "firstName"]), guests, i)
+                            this.generateEditFirstName(guests.getIn([i, "firstName"]))
                         ) : (
                             <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
                         )}
@@ -462,9 +562,15 @@ class MainContent extends Component {
                         )}
 
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                            this.generateCategories(guests.getIn([i, "category", "name"]), categories)
+                            this.generateCategories(guests.getIn([i, "category"]), categories)
                         ) : (
                             <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
+                        )}
+
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateSubCategory(guests.getIn([i, "subcategory"]), subCategories)
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "subcategory", "name"])}</td>
                         )}
 
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
@@ -486,6 +592,12 @@ class MainContent extends Component {
                         )}
 
                         {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                            this.generateEditTableNumber(guests.getIn([i, "tableNo"]))
+                        ) : (
+                            <td style={this.td}>{guests.getIn([i, "tableNo"])}</td>
+                        )}
+
+                        {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
                             <td key={"content-removeIcon"} style={this.td}>
                                 <img alt={"remove-icon"}
                                      style={this.logoStyle}
@@ -499,7 +611,7 @@ class MainContent extends Component {
                             editActive && (guests.getIn([i, "id"]) === selectedId) ? (
                                 <td style={this.td}>
                                     <img alt={"close-icon"} style={this.logoStyle} src={closeIcon}
-                                         onClick={() => this.handleEdit(guests.getIn([i, "id"]))}/>
+                                         onClick={() => this.handleEdit(guests.getIn([i, "id"]), guests, i)}/>
                                 </td>
                             ) : (
                                 <td style={this.td}>
@@ -508,7 +620,6 @@ class MainContent extends Component {
                                 </td>
                             )
                         }
-
                     </tr>
                 );
             }
@@ -585,11 +696,13 @@ const mapStateToProps = state => {
     const guests = state.datareducer.get(POPULATE_KEY_FETCH_GUESTS);
     const categories = state.datareducer.get(POPULATE_KEY_FETCH_CATEGORIES);
     const guestUpdate = state.datareducer.get(POPULATE_KEY_UPDATE_GUEST);
+    const subCategories = state.datareducer.get(POPULATE_KEY_FETCH_SUBCATEGORIES);
 
     return {
         guests,
         guestUpdate,
-        categories
+        categories,
+        subCategories
     };
 };
 
@@ -600,7 +713,8 @@ function mapDispatchToProps(dispatch) {
         doDeleteSingleGuest,
         updateResources,
         doUpdateGuest,
-        doFetchAllCategories
+        doFetchAllCategories,
+        doFetchAllSubCategoriesByCategoryId
     }, dispatch);
 }
 

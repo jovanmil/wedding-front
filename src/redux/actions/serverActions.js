@@ -3,8 +3,9 @@ import {updateResources, updateResourcesWithIds} from "../../redux/actions/popul
 import {decrypt} from "../crypting/crypt";
 import {POPULATE_KEY_USER_DETAILS, TYPE_USER_DETAILS} from "./constants";
 
-const localPrefix = "http://localhost:9005";
-const serverPrefix = "http://svadba.jvmhost.net:9005";
+const serverPrefix = "http://localhost:9005";
+
+// const serverPrefix = "http://svadba.jvmhost.net:9005";
 
 export function doLogin(form, populateKey, type) {
     const userName = form.email;
@@ -234,19 +235,18 @@ export function doPostSubCategoryByCategoryId(subCategoryName, categoryId, popul
     }
 }
 
-export function doUpdateGuest(guestId, firstName, lastName, description, invited, confirmed, category, subcategory, populateKey, type) {
+export function doUpdateGuest(guestId, firstName, lastName, description, invited, confirmed, categoryId, subcategoryId, tableNo, populateKey, type) {
     const TOKEN = decrypt(window.sessionStorage.getItem("token"));
 
     return (dispatch) => {
-        axios.put(serverPrefix + "/guests/" + guestId,
+        axios.put(serverPrefix + "/guests/" + guestId + "/" + categoryId + "/" + subcategoryId,
             {
                 "firstName": firstName,
                 "lastName": lastName,
                 "description": description,
-                // "category": category,
-                // "subcategory": subcategory,
                 "invited": invited,
-                "confirmed": confirmed
+                "confirmed": confirmed,
+                "tableNo": tableNo
             },
             {
                 headers: {
