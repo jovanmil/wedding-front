@@ -44,27 +44,27 @@ class LoginForm extends Component {
                     <div className="col-md-12" style={this.col_md_12_extended}>
                         <img className="rounded" width="150px" style={this.rounded} src={logo} alt="dossier"/>
                         <div className="page-header">
-                            <h4># Jovan and Danica wedding App</h4>
-                            <small>Please fill email and password!</small>
+                            <h4># Jovan & Danica wedding App</h4>
+                            <small>Molimo vas da unesete email i password!</small>
                         </div>
                     </div>
                 </div>
 
                 <Form>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Email address</Form.Label>
+                        <Form.Label>Email adresa</Form.Label>
                         <Form.Control onChange={changeEmail} value={email} type="email" placeholder="Enter email"/>
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label>Sifra</Form.Label>
                         <Form.Control onChange={changePassword} value={password} type="password"
                                       placeholder="Password"/>
                     </Form.Group>
                     <hr/>
                     <Button style={this.buttonStyle} onClick={click} onKeyPress={keyPress} variant="primary"
                             type="button">
-                        LogIn
+                        Uloguj se!
                     </Button>
                 </Form>
             </div>
