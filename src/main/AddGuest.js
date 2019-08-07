@@ -420,7 +420,7 @@ class AddGuest extends Component {
                     <Button onClick={() => this.guestPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Dodaj gosta</Button>
+                            type="button">Gosti</Button>
                     <span style={this.span}/>
                     <Button onClick={() => this.addCategoryPage()}
                             style={this.buttonStyle}
