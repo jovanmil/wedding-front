@@ -290,9 +290,9 @@ class AddGuest extends Component {
                 <Label>Invited</Label>
                 <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedInvited}>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectInvited("false")}>Ne</Dropdown.Item>
+                                   onClick={() => this.activitySelectInvited("false")}>false</Dropdown.Item>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectInvited("true")}>Da</Dropdown.Item>
+                                   onClick={() => this.activitySelectInvited("true")}>true</Dropdown.Item>
                 </DropdownButton>
             </div>
         );
@@ -320,11 +320,11 @@ class AddGuest extends Component {
                 <Label>Potvrdio</Label>
                 <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedConfirmed}>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectConfirmed("true")}>Da</Dropdown.Item>
+                                   onClick={() => this.activitySelectConfirmed("true")}>true</Dropdown.Item>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectConfirmed("false")}>Ne</Dropdown.Item>
+                                   onClick={() => this.activitySelectConfirmed("false")}>false</Dropdown.Item>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectConfirmed("unknown")}>Nepoznato</Dropdown.Item>
+                                   onClick={() => this.activitySelectConfirmed("unknown")}>unknown</Dropdown.Item>
                 </DropdownButton>
             </div>
         );
