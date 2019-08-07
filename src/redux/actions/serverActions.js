@@ -3,9 +3,9 @@ import {updateResources, updateResourcesWithIds} from "../../redux/actions/popul
 import {decrypt} from "../crypting/crypt";
 import {POPULATE_KEY_USER_DETAILS, TYPE_USER_DETAILS} from "./constants";
 
-// const serverPrefix = "http://localhost:9005";
+const serverPrefix = "http://localhost:9005";
 
-const serverPrefix = "http://svadba.jvmhost.net:9005";
+// const serverPrefix = "http://svadba.jvmhost.net:9005";
 
 export function doLogin(form, populateKey, type) {
     const userName = form.email;
