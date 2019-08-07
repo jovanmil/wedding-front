@@ -49,9 +49,9 @@ class MainContent extends Component {
         "Category",
         "Subcategory",
         "Description",
+        "Table No",
         "Invited",
         "Confirmed",
-        "Table No",
         "Edit",
       ],
       firstName: "",
@@ -207,9 +207,9 @@ class MainContent extends Component {
     this.setState({firstName: list.getIn([position, "firstName"])});
     this.setState({lastName: list.getIn([position, "lastName"])});
     this.setState({description: list.getIn([position, "description"])});
+    this.setState({tableNo: list.getIn([position, "tableNo"])});
     this.setState({invited: list.getIn([position, "invited"])});
     this.setState({confirmed: list.getIn([position, "confirmed"])});
-    this.setState({tableNo: list.getIn([position, "tableNo"])});
   }
 
   handleEdit(id, list, position) {
@@ -607,6 +607,12 @@ class MainContent extends Component {
               )}
 
               {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                  this.generateEditTableNumber(guests.getIn([i, "tableNo"]))
+              ) : (
+                  <td style={this.td}>{guests.getIn([i, "tableNo"])}</td>
+              )}
+
+              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
                   this.generateInvited(guests.getIn([i, "invited"]))
               ) : (
                   guests.getIn([i, "invited"]) === "true" ?
@@ -620,12 +626,6 @@ class MainContent extends Component {
                   guests.getIn([i, "confirmed"]) === "true" ?
                       <td style={this.greenAlert}>{guests.getIn([i, "confirmed"])}</td> :
                       <td style={this.redAlert}>{guests.getIn([i, "confirmed"])}</td>
-              )}
-
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateEditTableNumber(guests.getIn([i, "tableNo"]))
-              ) : (
-                  <td style={this.td}>{guests.getIn([i, "tableNo"])}</td>
               )}
 
               {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
