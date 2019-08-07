@@ -128,7 +128,7 @@ class AddGuest extends Component {
             <div style={this.componentStyle}>
                 <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                        <Label>Name</Label>
+                        <Label>Ime</Label>
                     </InputGroup.Prepend>
                     <FormControl value={this.state.firstName} onChange={(event) => this.activitySelectFirstName(event)}
                                  aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
@@ -146,7 +146,7 @@ class AddGuest extends Component {
             <div style={this.componentStyle}>
                 <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                        <Label>Last Name</Label>
+                        <Label>Prezime</Label>
                     </InputGroup.Prepend>
                     <FormControl value={this.state.lastName} onChange={(event) => this.activitySelectLastName(event)}
                                  aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
@@ -163,7 +163,7 @@ class AddGuest extends Component {
         return (
             <div style={this.componentStyle}>
                 <Form.Group controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Description</Form.Label>
+                    <Form.Label>Opis</Form.Label>
                     <Form.Control value={this.state.description}
                                   onChange={(event) => this.activitySelectDescription(event)} as="textarea" rows="3"/>
                 </Form.Group>
@@ -183,7 +183,7 @@ class AddGuest extends Component {
         let selectedCategory = null;
 
         if (category === "" || !category) {
-            selectedCategory = "Select Category..."
+            selectedCategory = "Izaberi kategoriju..."
         } else {
             categoriesData && categoriesData.forEach((categoryData) => {
                 if (categoryData.get("id") === category) {
@@ -207,7 +207,7 @@ class AddGuest extends Component {
 
         return (
             <div style={this.commonMargin}>
-                <Label>Category</Label>
+                <Label>Kategorija</Label>
                 <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedCategory}>
                     {categoriesJsx}
                 </DropdownButton>
@@ -235,7 +235,7 @@ class AddGuest extends Component {
         let selectedSubcategory = null;
 
         if (subcategory === "" || !subcategory) {
-            selectedSubcategory = "Select SubCategory..."
+            selectedSubcategory = "Izaberi podkategoriju..."
         } else {
             subCategoriesData && subCategoriesData.forEach((subCategoryData) => {
                 if (subCategoryData.get("id") === subcategory) {
@@ -259,7 +259,7 @@ class AddGuest extends Component {
 
         return (
             <div style={this.commonMargin}>
-                <Label>SubCategory</Label>
+                <Label>Podkategorija</Label>
                 <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedSubcategory}>
                     {subCategoriesJsx}
                 </DropdownButton>
@@ -280,7 +280,7 @@ class AddGuest extends Component {
         let selectedInvited = null;
 
         if (invited === "" || !invited) {
-            selectedInvited = "Invited..."
+            selectedInvited = "Pozvan..."
         } else {
             selectedInvited = invited;
         }
@@ -290,9 +290,9 @@ class AddGuest extends Component {
                 <Label>Invited</Label>
                 <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedInvited}>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectInvited("false")}>false</Dropdown.Item>
+                                   onClick={() => this.activitySelectInvited("false")}>Ne</Dropdown.Item>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectInvited("true")}>true</Dropdown.Item>
+                                   onClick={() => this.activitySelectInvited("true")}>Da</Dropdown.Item>
                 </DropdownButton>
             </div>
         );
@@ -310,21 +310,21 @@ class AddGuest extends Component {
         let selectedConfirmed = null;
 
         if (confirmed === "" || !confirmed) {
-            selectedConfirmed = "Confirmed..."
+            selectedConfirmed = "Potvrdio..."
         } else {
             selectedConfirmed = confirmed;
         }
 
         return (
             <div style={this.commonMargin}>
-                <Label>Confirmed</Label>
+                <Label>Potvrdio</Label>
                 <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedConfirmed}>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectConfirmed("true")}>true</Dropdown.Item>
+                                   onClick={() => this.activitySelectConfirmed("true")}>Da</Dropdown.Item>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectConfirmed("false")}>false</Dropdown.Item>
+                                   onClick={() => this.activitySelectConfirmed("false")}>Ne</Dropdown.Item>
                     <Dropdown.Item style={this.dropDownItem}
-                                   onClick={() => this.activitySelectConfirmed("unknown")}>unknown</Dropdown.Item>
+                                   onClick={() => this.activitySelectConfirmed("unknown")}>Nepoznato</Dropdown.Item>
                 </DropdownButton>
             </div>
         );
@@ -376,17 +376,17 @@ class AddGuest extends Component {
       const userId = decrypt(window.sessionStorage.getItem("userId"));
 
       if (!firstName || firstName === "") {
-            popUp("Error", "Wrong first name", null, true);
+            popUp("Greska", "Pogresno ime", null, true);
         } else if (!lastName || lastName === "") {
-            popUp("Error", "Wrong last name", null, true);
+            popUp("Greska", "Pogresno prezime", null, true);
         } else if (!category || category === "") {
-            popUp("Error", "Wrong category", null, true);
+            popUp("Greska", "Pogresna kategorija", null, true);
         } else if (!subcategory || subcategory === "") {
-            popUp("Error", "Wrong subcategory", null, true);
+            popUp("Greska", "Pogresna podkategorija", null, true);
         } else if (!invited || invited === "") {
-            popUp("Error", "Wrong invited", null, true);
+            popUp("Greska", "Pogresan unos za pozvan", null, true);
         } else if (!confirmed || confirmed === "") {
-            popUp("Error", "Wrong confirmed", null, true);
+            popUp("Greska", "pogresan unos za potvrdio", null, true);
         } else {
             doPostGuest(
                 firstName, lastName, description,
@@ -420,17 +420,17 @@ class AddGuest extends Component {
                     <Button onClick={() => this.guestPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Guests</Button>
+                            type="button">Dodaj gosta</Button>
                     <span style={this.span}/>
                     <Button onClick={() => this.addCategoryPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Add Category</Button>
+                            type="button">Dodaj kategoriju</Button>
                     <span style={this.span}/>
                     <Button onClick={() => this.addSubCategoryPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Add SubCategory</Button>
+                            type="button">Dodaj podkategoriju</Button>
                 </div>
             </div>
         )
@@ -457,13 +457,13 @@ class AddGuest extends Component {
         }
 
         const titleJsx = (
-            <div style={this.title}>Add Guest</div>
+            <div style={this.title}>Dodaj gosta</div>
         );
 
         const saveJsx = (
             <div>
                 <hr/>
-                <Button onClick={() => this.saveGuest()}>Add Wedding Guest</Button>
+                <Button onClick={() => this.saveGuest()}>Sacuvaj!</Button>
             </div>
         );
 

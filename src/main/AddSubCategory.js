@@ -119,7 +119,7 @@ class AddSubCategory extends Component {
             <div style={this.componentStyle}>
                 <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                        <Label>Category</Label>
+                        <Label>Podkategorija</Label>
                     </InputGroup.Prepend>
                     <FormControl value={this.state.category} onChange={(event) => this.activitySelectSubCategory(event)}
                                  aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
@@ -172,12 +172,12 @@ class AddSubCategory extends Component {
                     <Button onClick={() => this.guestPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Guests</Button>
+                            type="button">Gosti</Button>
                     <span style={this.span}/>
                     <Button onClick={() => this.addCategoryPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Add Category</Button>
+                            type="button">Dodaj kategoriju</Button>
                 </div>
             </div>
         )
@@ -191,7 +191,7 @@ class AddSubCategory extends Component {
         let selectedCategoryWrite = null;
 
         if (selectedCategory === "" || !selectedCategory) {
-            selectedCategoryWrite = "Select Category..."
+            selectedCategoryWrite = "Izaberi kategoriju..."
         } else {
             categoriesData && categoriesData.forEach((categoryData) => {
                 if (categoryData.get("id") === selectedCategory) {
@@ -215,7 +215,7 @@ class AddSubCategory extends Component {
 
         return (
             <div style={this.commonMargin}>
-                <Label>Category</Label>
+                <Label>Kategorija</Label>
                 <DropdownButton variant={"secondary"} id="dropdown-basic-button" title={selectedCategoryWrite}>
                     {categoriesJsx}
                 </DropdownButton>
@@ -240,9 +240,9 @@ class AddSubCategory extends Component {
         } = this.state;
 
         if (!selectedCategory || selectedCategory === "") {
-            popUp("Error", "Category not selected", null, true);
+            popUp("Greska", "Kategorija nije izabrana", null, true);
         } else if (!subCategory || subCategory === "") {
-            popUp("Error", "Subcategory not typed", null, true);
+            popUp("Greska", "Podkategorija nije uneta", null, true);
         } else {
             doPostSubCategoryByCategoryId(
                 subCategory,
@@ -278,7 +278,7 @@ class AddSubCategory extends Component {
         const saveJsx = (
             <div>
                 <hr/>
-                <Button onClick={() => this.saveSubCategory()}>Add Category</Button>
+                <Button onClick={() => this.saveSubCategory()}>Sacuvaj!</Button>
             </div>
         );
 

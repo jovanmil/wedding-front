@@ -44,14 +44,14 @@ class MainContent extends Component {
       selectedId: null,
       headers: [
         "ID",
-        "First Name",
-        "Last Name",
-        "Category",
-        "Subcategory",
-        "Description",
-        "Table No",
-        "Invited",
-        "Confirmed",
+        "Ime",
+        "Prezime",
+        "Kategorija",
+        "Podkategorija",
+        "Opis",
+        "Broj stola",
+        "Pozvan",
+        "Potvrdio",
         "Edit",
       ],
       firstName: "",
@@ -337,8 +337,8 @@ class MainContent extends Component {
   handleRemove(guestId) {
     if (guestId) {
       popUp(
-          "Delete guest",
-          "Are you sure you want to do this?",
+          "Obrisi Gosta",
+          "Da li ste sigurno da zelite da obrisete gosta?",
           () => this.permanentlyRemoveGuest(guestId)
       );
     }
@@ -688,17 +688,17 @@ class MainContent extends Component {
             <Button onClick={() => this.addGuestPage()}
                     style={this.buttonStyle}
                     variant="primary"
-                    type="button">Add Guest</Button>
+                    type="button">Dodaj gosta</Button>
             <span style={this.span}/>
             <Button onClick={() => this.addCategoryPage()}
                     style={this.buttonStyle}
                     variant="primary"
-                    type="button">Add Category</Button>
+                    type="button">Dodaj kategoriju</Button>
             <span style={this.span}/>
             <Button onClick={() => this.addSubCategoryPage()}
                     style={this.buttonStyle}
                     variant="primary"
-                    type="button">Add SubCategory</Button>
+                    type="button">Dodaj podkategoriju</Button>
           </div>
         </div>
 

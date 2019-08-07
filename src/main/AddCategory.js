@@ -96,7 +96,7 @@ class AddCategory extends Component {
             <div style={this.componentStyle}>
                 <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                        <Label>Category</Label>
+                        <Label>Kategorija</Label>
                     </InputGroup.Prepend>
                     <FormControl value={this.state.category} onChange={(event) => this.activitySelectCategory(event)}
                                  aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
@@ -150,12 +150,12 @@ class AddCategory extends Component {
                     <Button onClick={() => this.guestPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Guests</Button>
+                            type="button">Gosti</Button>
                     <span style={this.span}/>
                     <Button onClick={() => this.addSubCategoryPage()}
                             style={this.buttonStyle}
                             variant="primary"
-                            type="button">Add SubCategory</Button>
+                            type="button">Dodaj podkategoriju</Button>
                 </div>
             </div>
         )
@@ -173,7 +173,7 @@ class AddCategory extends Component {
         const userId = decrypt(window.sessionStorage.getItem("userId"));
 
         if (!category || category === "") {
-            popUp("Error", "Wrong category name", null, true);
+            popUp("Greska", "Pogresan unos za kategoriju", null, true);
         } else {
             doPostCategory(category, userId, POPULATE_KEY_ADD_CATEGORY, TYPE_ADD_CATEGORY);
         }
@@ -181,13 +181,13 @@ class AddCategory extends Component {
 
     render() {
         const titleJsx = (
-            <div style={this.title}>Add Category</div>
+            <div style={this.title}>Dodaj kategoriju</div>
         );
 
         const saveJsx = (
             <div>
                 <hr/>
-                <Button onClick={() => this.saveCategory()}>Add Category</Button>
+                <Button onClick={() => this.saveCategory()}>Sacuvaj!</Button>
             </div>
         );
 
