@@ -1,27 +1,27 @@
 import React, {Component} from "react";
 import {
-  doDeleteSingleGuest,
-  doFetchAllCategories,
-  doFetchAllGuests,
-  doFetchAllSubCategoriesByCategoryId,
-  doLogin,
-  doUpdateGuest
+    doDeleteSingleGuest,
+    doFetchAllCategories,
+    doFetchAllGuests,
+    doFetchAllSubCategoriesByCategoryId,
+    doLogin,
+    doUpdateGuest
 } from "../redux/actions/serverActions";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {
-  POPULATE_KEY_DELETE_GUEST,
-  POPULATE_KEY_FETCH_CATEGORIES,
-  POPULATE_KEY_FETCH_GUESTS,
-  POPULATE_KEY_FETCH_SUBCATEGORIES,
-  POPULATE_KEY_LOG_IN,
-  POPULATE_KEY_UPDATE_GUEST,
-  TYPE_DELETE_GUEST,
-  TYPE_FETCH_CATEGORIES,
-  TYPE_FETCH_GUESTS,
-  TYPE_FETCH_SUBCATEGORIES,
-  TYPE_LOG_IN,
-  TYPE_UPDATE_GUEST
+    POPULATE_KEY_DELETE_GUEST,
+    POPULATE_KEY_FETCH_CATEGORIES,
+    POPULATE_KEY_FETCH_GUESTS,
+    POPULATE_KEY_FETCH_SUBCATEGORIES,
+    POPULATE_KEY_LOG_IN,
+    POPULATE_KEY_UPDATE_GUEST,
+    TYPE_DELETE_GUEST,
+    TYPE_FETCH_CATEGORIES,
+    TYPE_FETCH_GUESTS,
+    TYPE_FETCH_SUBCATEGORIES,
+    TYPE_LOG_IN,
+    TYPE_UPDATE_GUEST
 } from "../redux/actions/constants";
 import {updateResources} from "../redux/actions/populateActions";
 import Table from "react-bootstrap/Table";
@@ -208,12 +208,12 @@ class MainContent extends Component {
   }
 
   resetInputTextOnHanldeEdit(id, list, position) {
-    this.setState({firstName: list.getIn([position, "firstName"])});
-    this.setState({lastName: list.getIn([position, "lastName"])});
-    this.setState({description: list.getIn([position, "description"])});
-    this.setState({tableNo: list.getIn([position, "tableNo"])});
-    this.setState({invited: list.getIn([position, "invited"])});
-    this.setState({confirmed: list.getIn([position, "confirmed"])});
+      this.setState({firstName: list[position].get("firstName")});
+      this.setState({lastName: list[position].get("lastName")});
+      this.setState({description: list[position].get("description")});
+      this.setState({tableNo: list[position].get("tableNo")});
+      this.setState({invited: list[position].get("invited")});
+      this.setState({confirmed: list[position].get("confirmed")});
   }
 
   handleEdit(id, list, position) {
@@ -265,7 +265,7 @@ class MainContent extends Component {
 
     let categoryFinal = null;
     if (category === "") {
-      categoryFinal = list.getIn([position, "category", "id"]);
+        categoryFinal = list[position].getIn(["category", "id"]);
     }
     else {
       categoryFinal = category;
@@ -273,7 +273,7 @@ class MainContent extends Component {
 
     let subCategoryFinal = null;
     if (subcategory === "") {
-      subCategoryFinal = list.getIn([position, "subcategory", "id"]);
+        subCategoryFinal = list[position].getIn(["subcategory", "id"]);
     }
     else {
       subCategoryFinal = subcategory;
@@ -575,86 +575,96 @@ class MainContent extends Component {
     } = this.props;
 
     const bodyContent = [];
+      const guestArr = [];
+      if (guests && guests.size !== 0) {
+          guests.forEach((guest) => {
+              guestArr.push(guest);
+          });
 
-    if (guests && guests.length !== 0 && categories) {
-      for (let i = 0; i < guests.size; i++) {
+          guestArr.sort((a, b) => {
+              return (a.get("category").get("name") > b.get("category").get("name")) ? 1 : -1
+          });
+      }
+
+      if (guestArr && guestArr.length !== 0 && categories) {
+          for (let i = 0; i < guestArr.length; i++) {
         bodyContent.push(
             <tr key={"content-" + i}>
-              <td style={this.td}>{guests.getIn([i, "id"])}</td>
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateEditFirstName(guests.getIn([i, "firstName"]))
+                <td style={this.td}>{guestArr[i].get("id")}</td>
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateEditFirstName(guestArr[i].get("firstName"))
               ) : (
-                  <td style={this.td}>{guests.getIn([i, "firstName"])}</td>
+                    <td style={this.td}>{guestArr[i].get("firstName")}</td>
               )}
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateEditLastName(guests.getIn([i, "lastName"]))
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateEditLastName(guestArr[i].get("lastName"))
               ) : (
-                  <td style={this.td}>{guests.getIn([i, "lastName"])}</td>
-              )}
-
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateCategories(guests.getIn([i, "category"]), categories)
-              ) : (
-                  <td style={this.td}>{guests.getIn([i, "category", "name"])}</td>
+                    <td style={this.td}>{guestArr[i].get("lastName")}</td>
               )}
 
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateSubCategory(guests.getIn([i, "subcategory"]), subCategories)
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateCategories(guestArr[i].get("category"), categories)
               ) : (
-                  <td style={this.td}>{guests.getIn([i, "subcategory", "name"])}</td>
+                    <td style={this.td}>{guestArr[i].get("category").get("name")}</td>
               )}
 
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateEditDescription(guests.getIn([i, "description"]))
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateSubCategory(guestArr[i].get("subcategory"), subCategories)
               ) : (
-                  <td style={this.td}>{guests.getIn([i, "description"])}</td>
+                    <td style={this.td}>{guestArr[i].get("subcategory").get("name")}</td>
               )}
 
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateEditTableNumber(guests.getIn([i, "tableNo"]))
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateEditDescription(guestArr[i].get("description"))
               ) : (
-                  <td style={this.td}>{guests.getIn([i, "tableNo"])}</td>
+                    <td style={this.td}>{guestArr[i].get("description")}</td>
               )}
 
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateInvited(guests.getIn([i, "invited"]))
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateEditTableNumber(guestArr[i].get("tableNo"))
               ) : (
-                  guests.getIn([i, "invited"]) === "true" ?
-                      <td style={this.greenAlert}>{guests.getIn([i, "invited"])}</td> :
-                      <td style={this.yellowAlert}>{guests.getIn([i, "invited"])}</td>
+                    <td style={this.td}>{guestArr[i].get("tableNo")}</td>
               )}
 
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
-                  this.generateConfirmed(guests.getIn([i, "confirmed"]))
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateInvited(guestArr[i].get("invited"))
               ) : (
-                  guests.getIn([i, "confirmed"]) === "true" ?
-                      <td style={this.greenAlert}>{guests.getIn([i, "confirmed"])}</td> : (
-                          guests.getIn([i, "confirmed"]) === "false" ?
-                              <td style={this.redAlert}>{guests.getIn([i, "confirmed"])}</td> :
-                              <td style={this.td}>{guests.getIn([i, "confirmed"])}</td>
+                    guestArr[i].get("invited") === "true" ?
+                        <td style={this.greenAlert}>{guestArr[i].get("invited")}</td> :
+                        <td style={this.yellowAlert}>{guestArr[i].get("invited")}</td>
+              )}
+
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
+                    this.generateConfirmed(guestArr[i].get("confirmed"))
+              ) : (
+                    guestArr[i].get("confirmed") === "true" ?
+                        <td style={this.greenAlert}>{guestArr[i].get("confirmed")}</td> : (
+                            guestArr[i].get("confirmed") === "false" ?
+                                <td style={this.redAlert}>{guestArr[i].get("confirmed")}</td> :
+                                <td style={this.td}>{guestArr[i].get("confirmed")}</td>
                       )
               )}
 
-              {editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                {editActive && (guestArr[i].get("id") === selectedId) ? (
                   <td key={"content-removeIcon"} style={this.td}>
                     <img alt={"remove-icon"}
                          style={this.logoStyle}
                          src={removeIcon}
-                         onClick={() => this.handleRemove(guests.getIn([i, "id"]))}
+                         onClick={() => this.handleRemove(guestArr[i].get("id"))}
                     />
                   </td>
               ) : null}
 
               {
-                editActive && (guests.getIn([i, "id"]) === selectedId) ? (
+                  editActive && (guestArr[i].get("id") === selectedId) ? (
                     <td style={this.td}>
                       <img alt={"close-icon"} style={this.logoStyle} src={closeIcon}
-                           onClick={() => this.handleEdit(guests.getIn([i, "id"]), guests, i)}/>
+                           onClick={() => this.handleEdit(guestArr[i].get("id"), guestArr, i)}/>
                     </td>
                 ) : (
                     <td style={this.td}>
                       <img alt={"edit-icon"} style={this.logoStyle} src={editIcon}
-                           onClick={() => this.handleReEdit(guests.getIn([i, "id"]), guests, i)}/>
+                           onClick={() => this.handleReEdit(guestArr[i].get("id"), guestArr, i)}/>
                     </td>
                 )
               }
